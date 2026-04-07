@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>여행 웹페이지 — 스토리보드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f6fa;--w:#fff;--s:#f0f1f8;--bd:#e3e5f0;--bd2:#c9cde0;
+  --t:#16192b;--t2:#585e78;--t3:#9299b2;
+  --a:#3d68f5;--al:#ecf0fe;--ab:#b8c6fc;
+  --g:#1a9f6d;--gl:#e5f7f1;--gb:#96dfc5;
+  --am:#c97214;--aml:#fdf1e2;--amb:#f5ca80;
+  --r:#d63030;--rl:#fde8e8;--rb:#f5a0a0;
+  --gy:#f0f1f8;--gyb:#c4c9de;
+  --fn:'Plus Jakarta Sans','Noto Sans KR',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --sh:0 2px 12px rgba(0,0,0,.06);
+  --sh2:0 6px 28px rgba(0,0,0,.1)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t);font-family:var(--fn);font-size:14px;line-height:1.6;min-height:100vh}
+code{font-family:var(--mono);font-size:10.5px;background:var(--s);padding:1px 5px;border-radius:3px;color:var(--a);border:1px solid var(--bd)}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:500;height:52px;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;padding:0 20px;gap:8px
+}
+.tb-brand{
+  display:flex;align-items:center;gap:7px;cursor:pointer;flex-shrink:0;
+  font-size:13.5px;font-weight:600;color:var(--t);margin-right:4px
+}
+.tb-brand-dot{width:8px;height:8px;border-radius:50%;background:var(--a)}
+.tb-back{
+  display:flex;align-items:center;gap:5px;padding:5px 12px;
+  border-radius:8px;border:1px solid var(--bd);background:var(--w);
+  color:var(--t2);font-size:12px;font-weight:500;cursor:pointer;
+  font-family:var(--fn);transition:all .15s;flex-shrink:0;white-space:nowrap
+}
+.tb-back:hover{background:var(--s);color:var(--t);border-color:var(--bd2)}
+.tb-back svg{width:13px;height:13px;flex-shrink:0}
+.tb-back.hide{display:none!important}
+
+/* ── DROPDOWN NAV ── */
+.tb-nav{display:flex;align-items:center;gap:1px;flex:1}
+.nav-item{position:relative}
+.nav-btn{
+  display:flex;align-items:center;gap:4px;padding:6px 12px;height:52px;
+  background:transparent;border:none;border-bottom:2px solid transparent;
+  color:var(--t2);font-size:12.5px;font-weight:500;cursor:pointer;
+  font-family:var(--fn);transition:color .15s;white-space:nowrap
+}
+.nav-btn:hover{color:var(--t)}
+.nav-btn.cur{color:var(--a);border-bottom-color:var(--a)}
+.nav-btn.home-btn-nav{border-bottom:2px solid transparent}
+.nav-btn .caret{font-size:9px;opacity:.5;margin-left:1px}
+.nav-dropdown{
+  display:none;position:absolute;top:52px;left:0;
+  background:var(--w);border:1px solid var(--bd);border-radius:12px;
+  box-shadow:0 8px 32px rgba(0,0,0,.12);padding:6px;
+  min-width:200px;z-index:600
+}
+.nav-item:hover .nav-dropdown{display:block}
+.dd-item{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;
+  border-radius:7px;cursor:pointer;transition:background .1s;white-space:nowrap
+}
+.dd-item:hover{background:var(--s)}
+.dd-num{font-size:9px;font-weight:700;font-family:var(--mono);background:var(--s);color:var(--t3);padding:2px 6px;border-radius:4px;flex-shrink:0}
+.dd-item.adm .dd-num{background:var(--gy);color:var(--t2)}
+.dd-label{font-size:12px;font-weight:500;color:var(--t)}
+.dd-divider{height:1px;background:var(--bd);margin:4px 0}
+
+.tb-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.tb-home{
+  display:flex;align-items:center;gap:5px;padding:5px 11px;
+  border-radius:8px;border:1px solid var(--bd);background:var(--w);
+  color:var(--t2);font-size:12px;font-weight:500;cursor:pointer;
+  font-family:var(--fn);transition:all .15s
+}
+.tb-home:hover{background:var(--s)}.tb-home.hide{display:none!important}
+.tb-badge{
+  font-size:10px;font-family:var(--mono);font-weight:600;
+  background:var(--al);color:var(--a);padding:2px 8px;border-radius:4px
+}
+.tb-title{display:none}
+
+/* ── PAGES ── */
+.page{display:none;min-height:100vh;padding-top:52px;animation:fadeIn .18s ease}
+.page.on{display:block}
+@keyframes fadeIn{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ── HOME HERO ── */
+.home-hero{
+  max-width:1120px;margin:0 auto;padding:56px 32px 36px;
+  display:grid;grid-template-columns:1fr 312px;gap:48px;align-items:start
+}
+@media(max-width:860px){.home-hero{grid-template-columns:1fr;padding:40px 20px 28px}}
+.eye{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--al);border:1px solid var(--ab);border-radius:20px;
+  padding:4px 13px;font-size:11px;font-weight:600;color:var(--a);margin-bottom:18px
+}
+.eye-dot{width:6px;height:6px;border-radius:50%;background:var(--a);animation:blink 1.8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.home-title{font-size:42px;font-weight:600;line-height:1.05;letter-spacing:-.8px;margin-bottom:10px}
+.home-title em{color:var(--a);font-style:normal}
+.home-sub{font-size:14px;color:var(--t2);line-height:1.9;margin-bottom:22px;max-width:500px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:4px 11px;border-radius:6px;border:1px solid var(--bd);background:var(--w);font-size:11px;font-family:var(--mono);color:var(--t2)}
+
+.scard{background:var(--w);border:1px solid var(--bd);border-radius:14px;overflow:hidden;box-shadow:var(--sh)}
+.s-head{padding:11px 16px;font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.09em;text-transform:uppercase;border-bottom:1px solid var(--bd);background:var(--s)}
+.s-row{display:flex;align-items:center;padding:8px 16px;border-bottom:1px solid var(--s);font-size:12.5px}
+.s-row:last-child{border-bottom:none}
+.sn{flex:1;font-weight:500}.sv{font-size:11px;font-family:var(--mono);color:var(--t3);margin-right:6px}
+.sp{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:var(--s)}
+
+/* ── NAV CARDS ── */
+.nav-wrap{max-width:1120px;margin:0 auto;padding:0 32px 60px}
+@media(max-width:860px){.nav-wrap{padding:0 20px 40px}}
+.sec-lbl{
+  font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:14px;
+  display:flex;align-items:center;gap:10px
+}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--bd)}
+
+.user-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:12px;margin-bottom:32px}
+.adm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px}
+@media(max-width:700px){.adm-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.adm-grid{grid-template-columns:1fr}}
+
+.nc{
+  background:var(--w);border:1px solid var(--bd);border-radius:14px;
+  padding:20px 20px 52px;cursor:pointer;transition:all .2s;
+  box-shadow:var(--sh);position:relative;overflow:hidden
+}
+.nc:hover{transform:translateY(-3px);box-shadow:var(--sh2);border-color:var(--ab)}
+.nc.adm:hover{border-color:var(--bd2)}
+.nc-num{
+  font-size:9.5px;font-weight:700;font-family:var(--mono);
+  background:var(--s);color:var(--t3);padding:2px 7px;border-radius:4px;
+  display:inline-block;margin-bottom:12px
+}
+.nc.adm .nc-num{background:var(--gy);color:var(--t2)}
+.nc-title{font-size:16px;font-weight:600;margin-bottom:6px;letter-spacing:-.2px}
+.nc-desc{font-size:11.5px;color:var(--t2);line-height:1.65}
+.nc-tags{display:flex;gap:4px;margin-top:11px;flex-wrap:wrap}
+.nct{font-size:9px;padding:2px 7px;border-radius:4px;font-weight:500;font-family:var(--mono)}
+.nct-b{background:var(--al);color:var(--a)}.nct-g{background:var(--gl);color:var(--g)}
+.nct-a{background:var(--aml);color:var(--am)}.nct-gy{background:var(--gy);color:var(--t2)}
+.nc-arrow{
+  position:absolute;bottom:18px;right:18px;width:30px;height:30px;border-radius:50%;
+  background:var(--al);display:flex;align-items:center;justify-content:center;
+  color:var(--a);font-size:14px;transition:all .2s
+}
+.nc:hover .nc-arrow{background:var(--a);color:#fff;transform:translateX(2px)}
+.nc.adm .nc-arrow{background:var(--gy);color:var(--t3)}
+.nc.adm:hover .nc-arrow{background:var(--t);color:#fff}
+
+.db-card{
+  background:var(--w);border:1px solid var(--bd);border-radius:14px;
+  padding:18px 20px;cursor:pointer;transition:all .2s;box-shadow:var(--sh);
+  display:flex;align-items:center;gap:16px
+}
+.db-card:hover{transform:translateY(-2px);box-shadow:var(--sh2);border-color:var(--ab)}
+.db-icon{width:46px;height:46px;border-radius:11px;background:var(--al);display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.db-info-title{font-size:15px;font-weight:600;margin-bottom:3px}
+.db-info-desc{font-size:11.5px;color:var(--t2)}
+
+/* ── SCREEN PAGES ── */
+.sw{max-width:1200px;margin:0 auto;padding:32px 32px 72px}
+@media(max-width:860px){.sw{padding:24px 20px 48px}}
+.sh{display:flex;align-items:flex-start;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.sc-num{font-size:10px;font-weight:700;font-family:var(--mono);background:var(--s);border:1px solid var(--bd2);color:var(--t3);padding:3px 9px;border-radius:5px;flex-shrink:0;margin-top:4px}
+.sc-tb{flex:1}
+.sc-title{font-size:26px;font-weight:600;letter-spacing:-.4px;margin-bottom:5px}
+.sc-desc{font-size:13px;color:var(--t2);line-height:1.8;max-width:580px}
+.rpill{padding:3px 12px;border-radius:20px;font-size:11px;font-weight:600;flex-shrink:0;margin-top:4px}
+.rp-h{background:var(--aml);color:var(--am);border:1px solid var(--amb)}
+.rp-v{background:var(--gl);color:var(--g);border:1px solid var(--gb)}
+.rp-e{background:var(--gy);color:var(--t2);border:1px solid var(--gyb)}
+.rp-d{background:var(--al);color:var(--a);border:1px solid var(--ab)}
+
+/* ── LAYOUT ── */
+.g3{display:grid;grid-template-columns:265px 1fr 278px;gap:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.g2s{display:grid;grid-template-columns:1fr 268px;gap:14px}
+@media(max-width:1060px){.g3,.g2,.g2s{grid-template-columns:1fr}}
+
+/* ── PANEL ── */
+.panel{background:var(--w);border:1px solid var(--bd);border-radius:14px;overflow:hidden;box-shadow:var(--sh)}
+.ph{padding:9px 16px;background:var(--s);border-bottom:1px solid var(--bd);font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.07em;text-transform:uppercase}
+.pb{padding:16px}
+
+/* ── WIREFRAME ── */
+.wf{background:var(--s);border:1px solid var(--bd2);border-radius:10px;overflow:hidden}
+.wfc{background:var(--bg);padding:6px 10px;display:flex;align-items:center;gap:5px;border-bottom:1px solid var(--bd)}
+.wfd{width:7px;height:7px;border-radius:50%}
+.wfurl{flex:1;background:var(--w);border-radius:4px;padding:2px 8px;font-family:var(--mono);font-size:9.5px;color:var(--t3);border:1px solid var(--bd);margin-left:5px}
+.wb{padding:10px}
+.wrow{display:flex;align-items:center;gap:7px;padding:5px 8px;background:var(--w);border-radius:6px;border:1px solid var(--bd);margin-bottom:4px}
+.ibar{height:5px;border-radius:3px;background:var(--s);margin-bottom:3px}
+.ibar.b{background:var(--ab)}.ibar.w9{width:90%}.ibar.w7{width:70%}.ibar.w5{width:50%}.ibar.w4{width:40%}.ibar.w3{width:30%}
+.iimg{border-radius:6px;margin-bottom:5px}
+.c1{background:linear-gradient(135deg,var(--al),var(--gl))}
+.c2{background:linear-gradient(135deg,var(--gl),var(--al))}
+.c3{background:linear-gradient(135deg,var(--aml),var(--rl))}
+.c4{background:linear-gradient(135deg,var(--rl),var(--aml))}
+.wfmap{border-radius:7px;border:1px solid var(--bd);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;margin-bottom:6px;background:linear-gradient(135deg,#daeeff,#c5f0e2 50%,#d5f0c0)}
+.wfml{font-size:9.5px;color:#2a7090;font-weight:500;text-align:center;padding:4px}
+.pin{position:absolute;width:9px;height:9px;border-radius:50%}
+.wcta{height:27px;border-radius:7px;width:100%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+.wcta.g{background:var(--g);color:#fff}.wcta.b{background:var(--a);color:#fff}
+.wtag{padding:2px 8px;border-radius:9px;font-size:9px;font-weight:600;background:var(--w);color:var(--t3);border:1px solid var(--bd)}
+.wtag.on{background:var(--al);color:var(--a);border-color:var(--ab)}
+.wtab{flex:1;padding:3px 5px;text-align:center;border-radius:5px;font-size:9px;font-weight:600;background:var(--s);color:var(--t3);border:1px solid var(--bd)}
+.wtab.on{background:var(--al);color:var(--a);border-color:var(--ab)}
+
+/* ── STEPS ── */
+.steps{display:flex;flex-direction:column}
+.step{display:flex;gap:10px;padding-bottom:16px;position:relative}
+.step:not(:last-child)::before{content:'';position:absolute;left:11px;top:24px;width:1px;height:calc(100% - 12px);background:var(--bd2)}
+.sn2{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--ab);background:var(--al);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:var(--mono);color:var(--a);flex-shrink:0;z-index:1;margin-top:1px}
+.sb{flex:1;padding-top:2px}.st{font-size:12.5px;font-weight:600;margin-bottom:3px}
+.sd{font-size:11.5px;color:var(--t2);line-height:1.75}
+.tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.tag{font-size:9.5px;padding:2px 7px;border-radius:4px;font-family:var(--mono);font-weight:500}
+.tb{background:var(--al);color:var(--a);border:1px solid var(--ab)}
+.tg{background:var(--gl);color:var(--g);border:1px solid var(--gb)}
+.ta{background:var(--aml);color:var(--am);border:1px solid var(--amb)}
+.tr{background:var(--rl);color:var(--r);border:1px solid var(--rb)}
+.tgy{background:var(--gy);color:var(--t2);border:1px solid var(--gyb)}
+
+/* ── RIGHT PANEL ── */
+.rlbl{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.rsec{margin-bottom:12px}
+.clist,.alist{display:flex;flex-direction:column;gap:3px}
+.ci,.ar{display:flex;align-items:flex-start;gap:6px;padding:6px 9px;background:var(--s);border-radius:7px;border:1px solid var(--bd)}
+.cdot{width:5px;height:5px;border-radius:50%;background:var(--a);flex-shrink:0;margin-top:5px}
+.cn{font-family:var(--mono);font-size:10.5px;color:var(--t);margin-bottom:1px}.cd{font-size:10.5px;color:var(--t3)}
+.method{font-family:var(--mono);font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:1px}
+.mget{background:var(--gl);color:var(--g)}.mpost{background:var(--al);color:var(--a)}.mpatch{background:var(--aml);color:var(--am)}.mdel{background:var(--rl);color:var(--r)}
+.aurl{font-family:var(--mono);font-size:10.5px;color:var(--t);flex:1}.anote{font-size:10px;color:var(--t3);margin-top:1px}
+.tip{padding:10px 13px;border-radius:9px;background:var(--gl);border:1px solid var(--gb);margin-top:4px}
+.tiptl{font-size:10.5px;font-weight:700;color:var(--g);margin-bottom:3px}.tipbd{font-size:10.5px;color:#16855a;line-height:1.6}
+.warn{padding:10px 13px;border-radius:9px;background:var(--aml);border:1px solid var(--amb);margin-top:7px}
+.warntl{font-size:10.5px;font-weight:700;color:var(--am);margin-bottom:3px}.warnbd{font-size:10.5px;color:#a45e0a;line-height:1.6}
+.danb{padding:10px 13px;border-radius:9px;background:var(--rl);border:1px solid var(--rb);margin-top:7px}
+.dantl{font-size:10.5px;font-weight:700;color:var(--r);margin-bottom:3px}.danbd{font-size:10.5px;color:#a52020;line-height:1.6}
+.infob{padding:10px 13px;border-radius:9px;background:var(--al);border:1px solid var(--ab);margin-bottom:10px}
+.inftl{font-size:10.5px;font-weight:700;color:var(--a);margin-bottom:3px}.infbd{font-size:10.5px;color:#2d53c8;line-height:1.6}
+
+/* ── PNAV ── */
+.pnav{display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;padding:16px 32px;border-top:1px solid var(--bd)}
+@media(max-width:860px){.pnav{padding:14px 20px}}
+.pnbtn{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;background:var(--w);border:1px solid var(--bd);color:var(--t2);font-size:12.5px;font-weight:500;cursor:pointer;font-family:var(--fn);transition:all .15s}
+.pnbtn:hover{background:var(--s);color:var(--t)}.pnbtn.pr{background:var(--a);color:#fff;border-color:var(--a)}.pnbtn.pr:hover{background:#2d55d8}
+.pninfo{font-size:11px;color:var(--t3)}
+
+/* ── BANNER ── */
+.bcnt{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--aml);border-radius:9px;border:1px solid var(--amb);margin-bottom:9px}
+.bcn{font-family:var(--mono);font-size:17px;font-weight:700;color:var(--am)}.bcl{font-size:10px;color:var(--am)}
+.blim{font-size:10px;font-weight:700;color:var(--am);padding:2px 9px;border-radius:4px;background:rgba(201,114,20,.14)}
+.bitem{display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--s);border-radius:7px;border:1px solid var(--bd);margin-bottom:4px}
+.bthumb{width:44px;height:27px;border-radius:5px;flex-shrink:0}.binfo{flex:1}
+.btitle{font-size:11px;font-weight:600;margin-bottom:1px}.bdate{font-size:9px;color:var(--t3)}
+.bst{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px}
+.bon{background:var(--gl);color:var(--g)}.bwait{background:var(--aml);color:var(--am)}.bend{background:var(--gy);color:var(--t3)}
+.bact{padding:2px 7px;border-radius:4px;font-size:9px;background:var(--w);border:1px solid var(--bd);color:var(--t3);cursor:pointer}
+
+/* ── TEMPLATES ── */
+.tgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-bottom:12px}
+.tcard{border:1.5px solid var(--bd);border-radius:8px;overflow:hidden;cursor:pointer}
+.tcard:hover{border-color:var(--a)}.tcard.sel{border-color:var(--a);box-shadow:0 0 0 3px var(--al)}
+.tpre{padding:6px;background:var(--s);min-height:46px}.tname{padding:3px 6px;font-size:8.5px;font-weight:600;border-top:1px solid var(--bd);color:var(--t)}
+.bkgrid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:10px}
+.bk{display:flex;align-items:center;gap:6px;padding:5px 8px;background:var(--s);border:1px solid var(--bd);border-radius:6px;cursor:pointer}
+.bkico{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;background:var(--al);color:var(--a);font-weight:700}
+.bkn{font-size:10px;font-weight:600}.bkd{font-size:9px;color:var(--t3)}
+
+/* ── USER TABLE ── */
+.utbl{width:100%;border-collapse:collapse;font-size:11.5px}
+.utbl th{text-align:left;padding:7px 10px;background:var(--s);border-bottom:1px solid var(--bd);font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.05em;text-transform:uppercase}
+.utbl td{padding:7px 10px;border-bottom:1px solid var(--s);vertical-align:middle}
+.utbl tr:last-child td{border-bottom:none}.utbl tr:hover td{background:var(--s)}
+.uavt{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.radm{background:var(--al);color:var(--a);border-radius:4px;padding:2px 7px;font-size:10px;font-weight:600}
+.rusr{background:var(--gy);color:var(--t3);border-radius:4px;padding:2px 7px;font-size:10px;font-weight:600}
+.sok{background:var(--gl);color:var(--g);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:600}
+.sstop{background:var(--rl);color:var(--r);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:600}
+.ubtn{padding:2px 8px;border-radius:4px;font-size:9.5px;cursor:pointer;border:1px solid var(--bd);background:var(--w);color:var(--t3)}
+.ubtn.info{background:var(--al);color:var(--a);border-color:var(--ab)}.ubtn.danger{background:var(--rl);color:var(--r);border-color:var(--rb)}
+.ubtn.warn{background:var(--aml);color:var(--am);border-color:var(--amb)}.ubtn.success{background:var(--gl);color:var(--g);border-color:var(--gb)}
+
+/* ── DB PAGE ── */
+.dbgrid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:24px}
+@media(max-width:800px){.dbgrid{grid-template-columns:1fr}}
+.dbt{background:var(--w);border:1px solid var(--bd);border-radius:14px;overflow:hidden;box-shadow:var(--sh)}
+.dbth{padding:10px 15px;background:var(--s);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px}
+.dbn{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--a)}.dbtd{font-size:11px;color:var(--t3)}
+.dbt table{width:100%;border-collapse:collapse;font-size:11.5px}
+.dbt th{text-align:left;padding:6px 12px;background:var(--s);border-bottom:1px solid var(--bd);font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.05em;text-transform:uppercase}
+.dbt td{padding:6px 12px;border-bottom:1px solid var(--s)}.dbt tr:last-child td{border-bottom:none}
+.cpk{font-family:var(--mono);color:var(--am);font-size:10px}.ctype{font-family:var(--mono);font-size:10px;color:var(--t3)}.cnote{font-size:11px;color:var(--t3)}.ckey{font-family:var(--mono);font-size:10px;font-weight:600}
+.apifl{display:flex;flex-direction:column;gap:5px}
+.afr{display:flex;align-items:flex-start;gap:9px;padding:8px 12px;background:var(--w);border:1px solid var(--bd);border-radius:9px;box-shadow:0 1px 4px rgba(0,0,0,.03)}
+.adesc{font-size:11.5px;color:var(--t2);flex:1}
+.aauth{font-size:9.5px;padding:2px 7px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.apub{background:var(--gy);color:var(--t3)}.areq{background:var(--gl);color:var(--g)}.aadm{background:var(--aml);color:var(--am)}
+.dlbl{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;padding:9px 0 5px;border-top:1px solid var(--bd);margin-top:8px;margin-bottom:5px}
+.dvd{height:1px;background:var(--bd);margin:12px 0}
+
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-brand" onclick="goHome()">
+    <div class="tb-brand-dot"></div>
+    여행 스토리보드
+  </div>
+  <button class="tb-back hide" id="btn-back" onclick="goBack()">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 12L6 8l4-4"/></svg>
+    뒤로
+  </button>
+
+  <nav class="tb-nav">
+    <!-- 홈 -->
+    <div class="nav-item">
+      <button class="nav-btn home-btn-nav" onclick="goHome()" id="nb-home">&#8962; 홈</button>
+    </div>
+
+    <!-- 사용자 화면 -->
+    <div class="nav-item">
+      <button class="nav-btn" id="nb-user">사용자 화면 <span class="caret">▾</span></button>
+      <div class="nav-dropdown">
+        <div class="dd-item" onclick="nav('p1')"><span class="dd-num">SCR-01</span><span class="dd-label">메인 홈</span></div>
+        <div class="dd-item" onclick="nav('p2')"><span class="dd-num">SCR-02</span><span class="dd-label">검색 결과</span></div>
+        <div class="dd-item" onclick="nav('p3')"><span class="dd-num">SCR-03</span><span class="dd-label">여행지 상세</span></div>
+        <div class="dd-item" onclick="nav('p4')"><span class="dd-num">SCR-04</span><span class="dd-label">예약·결제</span></div>
+        <div class="dd-item" onclick="nav('p5')"><span class="dd-num">SCR-05</span><span class="dd-label">예약 완료</span></div>
+        <div class="dd-item" onclick="nav('p6')"><span class="dd-num">SCR-06</span><span class="dd-label">예약 내역</span></div>
+      </div>
+    </div>
+
+    <!-- 관리자 화면 -->
+    <div class="nav-item">
+      <button class="nav-btn" id="nb-adm">관리자 화면 <span class="caret">▾</span></button>
+      <div class="nav-dropdown">
+        <div class="dd-item adm" onclick="nav('p7')"><span class="dd-num">ADM-01</span><span class="dd-label">배너 관리</span></div>
+        <div class="dd-item adm" onclick="nav('p8')"><span class="dd-num">ADM-02</span><span class="dd-label">여행지 관리</span></div>
+        <div class="dd-item adm" onclick="nav('p9')"><span class="dd-num">ADM-03</span><span class="dd-label">사용자 관리</span></div>
+      </div>
+    </div>
+
+    <!-- 화면 흐름도 -->
+    <div class="nav-item">
+      <button class="nav-btn" onclick="nav('flow')" id="nb-flow">화면 흐름도</button>
+    </div>
+
+    <!-- DB·API -->
+    <div class="nav-item">
+      <button class="nav-btn" onclick="nav('db')" id="nb-db">DB · API</button>
+    </div>
+  </nav>
+
+  <div class="tb-right">
+    <button class="tb-home hide" id="btn-home" onclick="goHome()">&#8962; 홈</button>
+    <span class="tb-badge" id="tb-badge">v2.0</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ HOME ═══════════════════════════════════ -->
+<div id="pg-home" class="page on">
+<div class="home-hero">
+  <div>
+    <div class="eye"><div class="eye-dot"></div>신규 개발자 학습용 · 상세 스토리보드</div>
+    <div class="home-title">여행 웹페이지<br><em>상세 스토리보드</em></div>
+    <div class="home-sub">배너 관리(날짜·최대 10개) · 여행지 상세(카카오맵+템플릿 10종) · 사용자 관리 페이지까지 담은 완전한 스토리보드입니다. 카드를 클릭해 각 화면 상세를 확인하세요.</div>
+    <div class="chips">
+      <span class="chip">eGovFrame 5.0</span><span class="chip">Tomcat 10.1</span>
+      <span class="chip">Vue 3 + Vite</span><span class="chip">MySQL 8.0</span>
+      <span class="chip">Kakao Maps v3</span><span class="chip">Spring Security</span>
+      <span class="chip">@Transactional</span><span class="chip">@CacheEvict</span>
+    </div>
+  </div>
+  <div class="scard">
+    <div class="s-head">기술 스택</div>
+    <div class="s-row"><span class="sn">Java JDK</span><span class="sv">17 LTS</span></div>
+    <div class="s-row"><span class="sn">Apache Tomcat</span><span class="sv">10.1</span><span class="sp" style="color:var(--am)">8080</span></div>
+    <div class="s-row"><span class="sn">Node.js + Vue 3</span><span class="sv">20 LTS</span><span class="sp" style="color:var(--g)">5173</span></div>
+    <div class="s-row"><span class="sn">MySQL</span><span class="sv">8.0</span><span class="sp" style="color:var(--a)">3306</span></div>
+    <div class="s-row"><span class="sn">Pinia</span><span class="sv">상태 관리</span></div>
+    <div class="s-row"><span class="sn">VeeValidate + Yup</span><span class="sv">폼 검증</span></div>
+    <div class="s-row"><span class="sn">Kakao Maps v3</span><span class="sv">지도·Geocoder·Static Map</span></div>
+    <div class="s-row"><span class="sn">Spring Security</span><span class="sv">BCrypt·세션·권한</span></div>
+  </div>
+</div>
+
+<div class="nav-wrap">
+  <div class="sec-lbl">사용자 화면 (SCR)</div>
+  <div class="user-grid">
+    <div class="nc" onclick="nav('p1')">
+      <div class="nc-num">SCR-01</div>
+      <div class="nc-title">메인 홈</div>
+      <div class="nc-desc">관리자 배너 슬라이더(최대 10개·날짜 설정), 검색창 자동완성, 테마 태그, 추천 여행지</div>
+      <div class="nc-tags"><span class="nct nct-a">Hybrid SSR+Vue</span><span class="nct nct-gy">Swiper.js</span></div>
+      <div class="nc-arrow">&#8594;</div>
+    </div>
+    <div class="nc" onclick="nav('p2')">
+      <div class="nc-num">SCR-02</div>
+      <div class="nc-title">검색 결과</div>
+      <div class="nc-desc">카카오맵 마커+클러스터, 복합 필터(지역·테마·가격), 무한 스크롤</div>
+      <div class="nc-tags"><span class="nct nct-b">Vue SPA</span><span class="nct nct-gy">MarkerClusterer</span></div>
+      <div class="nc-arrow">&#8594;</div>
+    </div>
+    <div class="nc" onclick="nav('p3')">
+      <div class="nc-num">SCR-03</div>
+      <div class="nc-title">여행지 상세</div>
+      <div class="nc-desc">동적 템플릿 10종, 섹션 블록 14종, 카카오맵 위치+주변 5km</div>
+      <div class="nc-tags"><span class="nct nct-b">Vue SPA</span><span class="nct nct-g">동적 템플릿</span></div>
+      <div class="nc-arrow">&#8594;</div>
+    </div>
+    <div class="nc" onclick="nav('p4')">
+      <div class="nc-num">SCR-04</div>
+      <div class="nc-title">예약·결제</div>
+      <div class="nc-desc">DateRangePicker, 인원 선택, VeeValidate 검증, PG 결제 @Transactional</div>
+      <div class="nc-tags"><span class="nct nct-a">Hybrid</span><span class="nct nct-g">@Transactional</span></div>
+      <div class="nc-arrow">&#8594;</div>
+    </div>
+    <div class="nc" onclick="nav('p5')">
+      <div class="nc-num">SCR-05</div>
+      <div class="nc-title">예약 완료</div>
+      <div class="nc-desc">오시는 길 카카오맵, @Async 이메일 발송, Kakao Static Map 첨부</div>
+      <div class="nc-tags"><span class="nct nct-g">완료 화면</span><span class="nct nct-gy">@Async</span></div>
+      <div class="nc-arrow">&#8594;</div>
+    </div>
+    <div class="nc" onclick="nav('p6')">
+      <div class="nc-num">SCR-06</div>
+      <div class="nc-title">예약 내역</div>
+      <div class="nc-desc">상태별 탭(computed 필터), 카카오맵 미니맵 모달, 취소·환불·리뷰 작성</div>
+      <div class="nc-tags"><span class="nct nct-b">Vue SPA</span><span class="nct nct-gy">Pinia computed</span></div>
+      <div class="nc-arrow">&#8594;</div>
+    </div>
+  </div>
+
+  <div class="sec-lbl">관리자 화면 (ADM)</div>
+  <div class="adm-grid">
+    <div class="nc adm" onclick="nav('p7')">
+      <div class="nc-num">ADM-01</div>
+      <div class="nc-title">배너 관리</div>
+      <div class="nc-desc">최대 10개 제한 · 노출 기간(날짜) 설정 · 드래그&드롭 순서 · @CacheEvict 즉시 반영 · @Scheduled 자동 만료</div>
+      <div class="nc-tags"><span class="nct nct-gy">eGov SSR+Vue</span><span class="nct nct-g">@CacheEvict</span></div>
+      <div class="nc-arrow">&#8594;</div>
+    </div>
+    <div class="nc adm" onclick="nav('p8')">
+      <div class="nc-num">ADM-02</div>
+      <div class="nc-title">여행지 관리</div>
+      <div class="nc-desc">카카오맵 지도 핀 설정 · 레이아웃 10종 선택 · 섹션 블록 14종 드래그&드롭 빌더</div>
+      <div class="nc-tags"><span class="nct nct-gy">eGov SSR+Vue</span><span class="nct nct-b">Kakao Maps</span></div>
+      <div class="nc-arrow">&#8594;</div>
+    </div>
+    <div class="nc adm" onclick="nav('p9')">
+      <div class="nc-num">ADM-03</div>
+      <div class="nc-title">사용자 관리</div>
+      <div class="nc-desc">복합 검색 · 권한 변경(USER↔ADMIN) · 계정 정지·활성화 · 상세 모달 · 일괄 처리 · CSV</div>
+      <div class="nc-tags"><span class="nct nct-gy">eGov SSR</span><span class="nct nct-a">Spring Security</span></div>
+      <div class="nc-arrow">&#8594;</div>
+    </div>
+  </div>
+
+  <div class="sec-lbl">명세</div>
+  <div class="db-card" onclick="nav('flow')" style="margin-top:12px">
+    <div class="db-icon">&#128204;</div>
+    <div>
+      <div class="db-info-title">전체 화면 흐름도</div>
+      <div class="db-info-desc">사용자 흐름 · 관리자 흐름 · 핵심 기술 흐름 시각화</div>
+    </div>
+    <div style="margin-left:auto;color:var(--t3);font-size:20px">&#8594;</div>
+  </div>
+  <div class="db-card" onclick="nav('db')" style="margin-top:12px">
+    <div class="db-icon">&#128202;</div>
+    <div>
+      <div class="db-info-title">DB 설계 &amp; API 명세</div>
+      <div class="db-info-desc">테이블 9개 · 사용자 REST API 13개 · 관리자 API 9개 전체 목록</div>
+    </div>
+    <div style="margin-left:auto;color:var(--t3);font-size:20px">&#8594;</div>
+  </div>
+</div>
+</div><!-- /home -->
+
+<!-- ═══════════════════════════════════ SCR-01 메인 홈 ═══════════════════════════════════ -->
+<div id="pg-p1" class="page">
+<div class="sw">
+  <div class="sh">
+    <div class="sc-num">SCR-01</div>
+    <div class="sc-tb">
+      <div class="sc-title">메인 홈</div>
+      <div class="sc-desc">사용자 랜딩 페이지. 관리자가 등록한 배너(최대 10개, 노출 기간 설정)가 Swiper로 자동 전환됩니다. <code>@Scheduled</code>로 만료 배너 자동 비활성화.</div>
+    </div>
+    <span class="rpill rp-h">Hybrid (SSR+Vue)</span>
+  </div>
+  <div class="g3">
+    <div class="panel"><div class="ph">📐 와이어프레임</div><div class="pb">
+      <div class="wf">
+        <div class="wfc"><div style="display:flex;gap:4px"><div class="wfd" style="background:#ff5f57"></div><div class="wfd" style="background:#febc2e"></div><div class="wfd" style="background:#28c840"></div></div><div class="wfurl">localhost:8080/</div></div>
+        <div class="wb">
+          <div class="wrow"><div style="width:28px;height:5px;border-radius:3px;background:var(--ab);opacity:.7"></div><div style="flex:1"></div><div style="font-size:9px;background:var(--al);color:var(--a);padding:2px 7px;border-radius:4px;font-weight:600">로그인</div></div>
+          <div class="iimg c1" style="height:50px;display:flex;align-items:center;justify-content:center;margin-bottom:4px"><span style="font-size:9.5px;color:#2a4ec8;font-weight:500">메인 배너 슬라이더 (관리자 등록)</span></div>
+          <div style="display:flex;gap:3px;justify-content:center;margin-bottom:6px"><div style="width:12px;height:3px;border-radius:2px;background:var(--a)"></div><div style="width:7px;height:3px;border-radius:2px;background:var(--bd2)"></div><div style="width:7px;height:3px;border-radius:2px;background:var(--bd2)"></div></div>
+          <div style="display:flex;gap:3px;margin-bottom:6px"><div style="flex:1;height:22px;border-radius:5px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 7px;font-size:9.5px;color:var(--t3)">여행지 검색...</div><div style="width:28px;height:22px;border-radius:5px;background:var(--a);flex-shrink:0"></div></div>
+          <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap"><span class="wtag on">바다</span><span class="wtag">산</span><span class="wtag">도시</span><span class="wtag">힐링</span></div>
+          <div style="font-size:9px;color:var(--t3);margin-bottom:4px;font-weight:700">인기 여행지</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+            <div class="panel"><div class="iimg c1" style="height:28px;margin-bottom:0"></div><div style="padding:4px 6px"><div class="ibar w7"></div><div class="ibar w5"></div></div></div>
+            <div class="panel"><div class="iimg c2" style="height:28px;margin-bottom:0"></div><div style="padding:4px 6px"><div class="ibar w7"></div><div class="ibar w4"></div></div></div>
+            <div class="panel"><div class="iimg c3" style="height:28px;margin-bottom:0"></div><div style="padding:4px 6px"><div class="ibar w7"></div><div class="ibar w5"></div></div></div>
+            <div class="panel"><div class="iimg c4" style="height:28px;margin-bottom:0"></div><div style="padding:4px 6px"><div class="ibar w7"></div><div class="ibar w3"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">👣 사용자 시나리오</div><div class="pb">
+      <div class="steps">
+        <div class="step"><div class="sn2">1</div><div class="sb"><div class="st">페이지 로드 — SSR + Vue 마운트</div><div class="sd">Spring Tiles가 서버에서 HTML을 완성해 전달합니다. Vue가 <code>#app</code>에 마운트되며 <code>onMounted</code>에서 배너·추천 API를 <code>Promise.all</code>로 병렬 호출해요.</div><div class="tags"><span class="tag ta">SSR</span><span class="tag tb">Vue mount</span></div></div></div>
+        <div class="step"><div class="sn2">2</div><div class="sb"><div class="st">메인 배너 슬라이더 — 관리자 최대 10개</div><div class="sd"><code>GET /api/main/content?areaCode=MAIN_BANNER</code>로 배너 목록을 받아 Swiper로 3초 자동 전환. 배너마다 노출 기간(시작일~종료일) 설정 가능. <code>@Scheduled</code>가 매일 자정 만료 배너를 자동 비활성화해요.</div><div class="tags"><span class="tag tb">Swiper.js</span><span class="tag tg">@Scheduled</span><span class="tag ta">최대 10개</span></div></div></div>
+        <div class="step"><div class="sn2">3</div><div class="sb"><div class="st">검색창 — 300ms debounce 자동완성</div><div class="sd">300ms 동안 추가 입력이 없을 때만 <code>GET /api/travel/suggest</code>를 호출해 드롭다운 5건을 표시합니다. 서버 부하를 크게 줄여줘요.</div><div class="tags"><span class="tag ta">debounce 패턴</span></div></div></div>
+        <div class="step"><div class="sn2">4</div><div class="sb"><div class="st">테마 태그 → 검색 결과 이동</div><div class="sd">관리자가 등록한 태그가 자동 표시. 클릭 시 Pinia <code>filterStore.categoryCode</code>를 업데이트하고 <code>/search?categoryCode=BEACH</code>로 이동합니다.</div><div class="tags"><span class="tag tb">Pinia</span><span class="tag tb">Vue Router</span></div></div></div>
+        <div class="step"><div class="sn2">5</div><div class="sb"><div class="st">추천 카드 + 찜 버튼 (낙관적 업데이트)</div><div class="sd">비로그인 시 로그인 유도 토스트. 로그인 상태라면 즉시 UI 업데이트(낙관적 업데이트) 후 <code>POST /api/wishlist/:id</code>를 백그라운드에서 호출. 실패 시 UI 롤백.</div><div class="tags"><span class="tag tg">낙관적 업데이트</span></div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">⚙️ 컴포넌트 · API</div><div class="pb">
+      <div class="rsec"><div class="rlbl">Vue 컴포넌트</div>
+        <div class="clist">
+          <div class="ci"><div class="cdot"></div><div><div class="cn">MainBanner.vue</div><div class="cd">관리자 배너 Swiper 렌더링</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">SearchBar.vue</div><div class="cd">debounce 자동완성 드롭다운</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">ThemeTagFilter.vue</div><div class="cd">관리자 등록 태그 목록</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">RecommendList.vue</div><div class="cd">추천 카드 그리드</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">WishButton.vue</div><div class="cd">찜 토글, 낙관적 업데이트</div></div></div>
+        </div>
+      </div>
+      <div class="rsec"><div class="rlbl">API 연결</div>
+        <div class="alist">
+          <div class="ar"><span class="method mget">GET</span><div><div class="aurl">/api/main/content</div><div class="anote">areaCode=MAIN_BANNER·THEME_TAGS·RECOMMEND</div></div></div>
+          <div class="ar"><span class="method mget">GET</span><div><div class="aurl">/api/travel/suggest</div><div class="anote">자동완성 5건</div></div></div>
+          <div class="ar"><span class="method mpost">POST</span><div><div class="aurl">/api/wishlist/:id</div><div class="anote">찜 토글</div></div></div>
+        </div>
+      </div>
+      <div class="tip"><div class="tiptl">💡 자동 반영 핵심</div><div class="tipbd">관리자 배너 저장 → <code>@CacheEvict</code> 캐시 무효화 → 사용자 다음 접속 시 새 배너 자동 표시!</div></div>
+    </div></div>
+  </div>
+</div>
+<div class="pnav"><button class="pnbtn" onclick="goHome()">&#8962; 홈으로</button><span class="pninfo">SCR-01 / 09</span><button class="pnbtn pr" onclick="nav('p2')">02 검색 결과 &#8594;</button></div>
+</div>
+
+<!-- ═══════════════════════════════════ SCR-02 검색 결과 ═══════════════════════════════════ -->
+<div id="pg-p2" class="page">
+<div class="sw">
+  <div class="sh">
+    <div class="sc-num">SCR-02</div>
+    <div class="sc-tb">
+      <div class="sc-title">검색 결과</div>
+      <div class="sc-desc">카카오맵 마커+클러스터와 카드 리스트를 동시에 표시. 필터 변경 시 지도·리스트가 함께 갱신되고 URL에 조건이 저장되어 링크 공유가 가능합니다.</div>
+    </div>
+    <span class="rpill rp-v">Vue SPA</span>
+  </div>
+  <div class="g3">
+    <div class="panel"><div class="ph">📐 와이어프레임</div><div class="pb">
+      <div class="wf">
+        <div class="wfc"><div style="display:flex;gap:4px"><div class="wfd" style="background:#ff5f57"></div><div class="wfd" style="background:#febc2e"></div><div class="wfd" style="background:#28c840"></div></div><div class="wfurl">/search?keyword=제주</div></div>
+        <div class="wb">
+          <div style="display:flex;gap:3px;margin-bottom:6px;flex-wrap:wrap"><span class="wtag on" style="font-size:9px">지역 ▾</span><span class="wtag" style="font-size:9px">테마 ▾</span><span class="wtag" style="font-size:9px">가격 ▾</span><div style="flex:1"></div><span class="wtag" style="font-size:9px">정렬 ▾</span></div>
+          <div class="wfmap" style="height:72px;margin-bottom:6px">
+            <div class="wfml">🗺️ 카카오맵 마커 렌더링<br><span style="font-size:8.5px;opacity:.7">MarkerClusterer 적용</span></div>
+            <div class="pin" style="top:28%;left:35%;background:#d63030"></div>
+            <div class="pin" style="top:52%;left:60%;background:#1a9f6d"></div>
+            <div class="pin" style="top:44%;left:20%;background:#c97214"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="display:flex;align-items:center;gap:6px;padding:5px 7px;background:var(--w);border-radius:6px;border:1.5px solid var(--ab)"><div style="width:24px;height:24px;border-radius:5px;background:var(--al);flex-shrink:0"></div><div style="flex:1"><div class="ibar w7" style="margin-bottom:2px"></div><div class="ibar w5"></div></div><span style="font-size:9px;font-weight:700;color:var(--g);background:var(--gl);padding:1px 5px;border-radius:3px">5만원</span></div>
+            <div style="display:flex;align-items:center;gap:6px;padding:5px 7px;background:var(--w);border-radius:6px;border:1px solid var(--bd)"><div style="width:24px;height:24px;border-radius:5px;background:var(--gl);flex-shrink:0"></div><div style="flex:1"><div class="ibar w7" style="margin-bottom:2px"></div><div class="ibar w7"></div></div><span style="font-size:9px;font-weight:700;color:var(--g);background:var(--gl);padding:1px 5px;border-radius:3px">7만원</span></div>
+            <div style="display:flex;align-items:center;gap:6px;padding:5px 7px;background:var(--w);border-radius:6px;border:1px solid var(--bd)"><div style="width:24px;height:24px;border-radius:5px;background:var(--aml);flex-shrink:0"></div><div style="flex:1"><div class="ibar w7" style="margin-bottom:2px"></div><div class="ibar w5"></div></div><span style="font-size:9px;font-weight:700;color:var(--g);background:var(--gl);padding:1px 5px;border-radius:3px">4만원</span></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">👣 사용자 시나리오</div><div class="pb">
+      <div class="steps">
+        <div class="step"><div class="sn2">1</div><div class="sb"><div class="st">URL 쿼리 파싱 → 자동 검색 + 마커 생성</div><div class="sd">URL 쿼리를 읽어 Pinia <code>filterStore</code>를 초기화합니다. <code>onMounted</code>에서 <code>GET /api/travel/search</code>를 호출하고 위도·경도로 카카오맵 마커를 생성해요. 10개 이상이면 <code>MarkerClusterer</code>로 자동 묶어줍니다.</div><div class="tags"><span class="tag tb">Kakao Maps API</span><span class="tag tb">MarkerClusterer</span></div></div></div>
+        <div class="step"><div class="sn2">2</div><div class="sb"><div class="st">마커 클릭 → 인포윈도우 표시</div><div class="sd">여행지명·별점·대표이미지·최저가를 인포윈도우로 표시합니다. "자세히 보기" 버튼 → <code>/travel/:id</code> 이동.</div></div></div>
+        <div class="step"><div class="sn2">3</div><div class="sb"><div class="st">필터 변경 → 리스트·마커 동시 갱신</div><div class="sd">Pinia <code>watch(filterStore)</code>로 조건 변경을 감지해 API 재호출. 리스트 교체와 마커 재렌더가 동시에 이루어지고 URL도 업데이트돼요. 링크 공유 시 동일 조건 유지!</div><div class="tags"><span class="tag tb">Pinia watch</span></div></div></div>
+        <div class="step"><div class="sn2">4</div><div class="sb"><div class="st">카드 hover → 해당 마커 강조</div><div class="sd"><code>filterStore.hoveredId</code>를 <code>MapView.vue</code>가 감지해 해당 마커 색상·크기를 강조하고 지도 중심으로 이동합니다.</div></div></div>
+        <div class="step"><div class="sn2">5</div><div class="sb"><div class="st">스크롤 끝 → 무한 스크롤</div><div class="sd"><code>IntersectionObserver</code>로 리스트 바닥을 감지하면 <code>page++</code>하고 API를 추가 호출합니다. 결과를 기존 목록에 append.</div><div class="tags"><span class="tag ta">IntersectionObserver</span></div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">⚙️ 컴포넌트 · API</div><div class="pb">
+      <div class="rsec"><div class="rlbl">Vue 컴포넌트</div>
+        <div class="clist">
+          <div class="ci"><div class="cdot"></div><div><div class="cn">MapView.vue</div><div class="cd">마커·클러스터·인포윈도우</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">FilterPanel.vue</div><div class="cd">지역·테마·가격 복합 필터</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">TravelList.vue</div><div class="cd">리스트 카드, hover 마커 연동</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">SortDropdown.vue</div><div class="cd">인기/별점/가격 정렬</div></div></div>
+        </div>
+      </div>
+      <div class="rsec"><div class="rlbl">API</div>
+        <div class="alist"><div class="ar"><span class="method mget">GET</span><div><div class="aurl">/api/travel/search</div><div class="anote">위경도·필터·페이지 포함</div></div></div></div>
+      </div>
+      <div class="tip"><div class="tiptl">💡 URL 쿼리 동기화</div><div class="tipbd">/search?regionCode=JEJU&sortType=RATING 형태로 URL에 저장. 링크 공유 시 동일 조건!</div></div>
+    </div></div>
+  </div>
+</div>
+<div class="pnav"><button class="pnbtn" onclick="nav('p1')">&#8592; 01 메인 홈</button><span class="pninfo">SCR-02 / 09</span><button class="pnbtn pr" onclick="nav('p3')">03 여행지 상세 &#8594;</button></div>
+</div>
+
+<!-- ═══════════════════════════════════ SCR-03 여행지 상세 ═══════════════════════════════════ -->
+<div id="pg-p3" class="page">
+<div class="sw">
+  <div class="sh">
+    <div class="sc-num">SCR-03</div>
+    <div class="sc-tb">
+      <div class="sc-title">여행지 상세 — 카카오맵 + 템플릿 시스템</div>
+      <div class="sc-desc">관리자가 선택한 레이아웃 템플릿(10종)과 섹션 블록(14종)을 <code>DynamicSection.vue</code>가 자동 렌더링. 위치 탭에서 카카오맵으로 위치와 주변 5km를 함께 표시합니다.</div>
+    </div>
+    <span class="rpill rp-v">Vue SPA · 동적 템플릿</span>
+  </div>
+  <div class="g2">
+    <div class="panel"><div class="ph">📐 여행지 상세 와이어프레임</div><div class="pb">
+      <div class="wf">
+        <div class="wfc"><div style="display:flex;gap:4px"><div class="wfd" style="background:#ff5f57"></div><div class="wfd" style="background:#febc2e"></div><div class="wfd" style="background:#28c840"></div></div><div class="wfurl">/travel/1</div></div>
+        <div class="wb">
+          <div class="iimg c1" style="height:52px;display:flex;align-items:center;justify-content:center;margin-bottom:4px"><span style="font-size:9.5px;color:#2a4ec8;font-weight:500">갤러리 메인 슬라이더</span></div>
+          <div style="display:flex;gap:3px;margin-bottom:6px"><div style="flex:1;height:12px;border-radius:3px;background:var(--ab)"></div><div style="flex:1;height:12px;border-radius:3px;background:var(--bd2)"></div><div style="flex:1;height:12px;border-radius:3px;background:var(--bd2)"></div><div style="flex:1;height:12px;border-radius:3px;background:var(--bd2)"></div></div>
+          <div style="font-size:11px;font-weight:600;margin-bottom:2px">협재해수욕장</div>
+          <div style="font-size:9.5px;color:var(--t3);margin-bottom:6px">★★★★☆ 4.7 · 리뷰 42건 · 제주 한림읍</div>
+          <div style="display:flex;gap:3px;margin-bottom:6px"><div class="wtab on">소개</div><div class="wtab">위치·주변</div><div class="wtab">리뷰</div><div class="wtab">가격</div></div>
+          <div style="border:1.5px dashed var(--bd2);border-radius:6px;padding:7px;margin-bottom:6px;background:var(--s)">
+            <div style="font-size:9px;color:var(--t3);text-align:center;margin-bottom:3px;font-weight:600">섹션 블록 동적 렌더링 영역</div>
+            <div style="font-size:8px;color:var(--t3);text-align:center">관리자 선택 레이아웃 + 섹션 14종<br>DynamicSection.vue 자동 렌더링</div>
+          </div>
+          <div class="wfmap" style="height:58px;margin-bottom:6px">
+            <div class="wfml">🗺️ 카카오맵 — 위치 + 주변 5km</div>
+            <div class="pin" style="top:42%;left:50%;background:#d63030"></div>
+            <div class="pin" style="top:25%;left:35%;background:#3d68f5"></div>
+            <div class="pin" style="top:65%;left:65%;background:#1a9f6d"></div>
+          </div>
+          <div class="wcta g">예약하기 — 50,000원~</div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">👣 사용자 시나리오</div><div class="pb">
+      <div class="steps">
+        <div class="step"><div class="sn2">1</div><div class="sb"><div class="st">병렬 API 로딩 — Promise.all</div><div class="sd">상세 정보+sections JSON과 예약 가능 날짜를 <code>Promise.all([])</code>로 동시 호출. 로딩 중 스켈레톤 UI를 표시해요.</div><div class="tags"><span class="tag tg">Promise.all</span><span class="tag tgy">Skeleton UI</span></div></div></div>
+        <div class="step"><div class="sn2">2</div><div class="sb"><div class="st">DynamicSection.vue — 섹션 블록 자동 렌더링</div><div class="sd">API 응답의 <code>sections JSON</code>을 파싱해 <code>:is="sectionComponents[section.type]"</code>으로 타입별 컴포넌트를 동적 선택합니다. 새 섹션 타입 추가해도 기존 코드 수정 불필요!</div><div class="tags"><span class="tag tb">동적 컴포넌트</span></div></div></div>
+        <div class="step"><div class="sn2">3</div><div class="sb"><div class="st">위치 탭 — 카카오맵 + 주변 5km + 길찾기</div><div class="sd">여행지 단일 마커와 반경 5km 주변 여행지 마커를 함께 표시. 길찾기: 모바일 <code>kakaomap://</code> 딥링크, PC 웹. 지도 탭은 <code>mapLoaded</code> 플래그로 첫 클릭 시에만 초기화해 성능 최적화.</div><div class="tags"><span class="tag tb">Kakao Maps</span><span class="tag ta">지연 초기화</span></div></div></div>
+        <div class="step"><div class="sn2">4</div><div class="sb"><div class="st">탭 전환 — v-show로 DOM 유지</div><div class="sd"><code>v-if</code> 대신 <code>v-show</code>를 써서 탭 전환 시 DOM이 제거되지 않습니다. 지도 객체가 초기화 상태를 유지해요.</div><div class="tags"><span class="tag ta">v-show vs v-if</span></div></div></div>
+        <div class="step"><div class="sn2">5</div><div class="sb"><div class="st">예약하기 → Navigation Guard</div><div class="sd"><code>authStore.isLoggedIn</code> 확인 → 비로그인이면 로그인 모달 → 성공 후 <code>/booking/:id</code>로 자동 이동.</div><div class="tags"><span class="tag ta">Nav Guard</span></div></div></div>
+      </div>
+    </div></div>
+  </div>
+  <!-- 템플릿 시스템 -->
+  <div class="g2s" style="margin-top:14px">
+    <div class="panel"><div class="ph">🎨 레이아웃 템플릿 10종 — 관리자가 선택</div><div class="pb">
+      <div class="infob"><div class="inftl">레이아웃 + 섹션 블록 시스템</div><div class="infbd">관리자가 10종 레이아웃 중 하나를 선택하고 섹션 블록 14종을 드래그&드롭으로 조합합니다. <code>sections JSON</code>으로 직렬화되어 DB에 저장되고 <code>DynamicSection.vue</code>가 자동 렌더링해요.</div></div>
+      <div class="tgrid">
+        <div class="tcard sel"><div class="tpre"><div style="height:30px;border-radius:4px;background:var(--al)"></div></div><div class="tname">L01 히어로</div></div>
+        <div class="tcard"><div class="tpre"><div style="display:grid;grid-template-columns:2fr 1fr;gap:2px;height:30px"><div style="border-radius:3px;background:var(--al)"></div><div style="display:flex;flex-direction:column;gap:2px"><div style="flex:1;border-radius:2px;background:var(--gl)"></div><div style="flex:1;border-radius:2px;background:var(--aml)"></div></div></div></div><div class="tname">L02 모자이크</div></div>
+        <div class="tcard"><div class="tpre"><div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;height:30px"><div style="border-radius:3px;background:var(--al)"></div><div style="display:flex;flex-direction:column;justify-content:center;gap:2px;padding:3px"><div style="height:3px;border-radius:2px;background:var(--ab)"></div><div style="height:3px;border-radius:2px;background:var(--bd2)"></div><div style="height:3px;border-radius:2px;background:var(--bd2)"></div></div></div></div><div class="tname">L03 좌이미지</div></div>
+        <div class="tcard"><div class="tpre"><div style="margin-bottom:3px"><div style="height:3px;border-radius:2px;background:var(--ab);margin-bottom:2px"></div><div style="height:3px;border-radius:2px;background:var(--bd2)"></div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;height:16px"><div style="border-radius:2px;background:var(--al)"></div><div style="border-radius:2px;background:var(--al)"></div><div style="border-radius:2px;background:var(--al)"></div></div></div><div class="tname">L04 3열 그리드</div></div>
+        <div class="tcard"><div class="tpre" style="position:relative;padding-left:8px"><div style="position:absolute;left:3px;top:0;bottom:0;width:2px;border-radius:2px;background:var(--gb)"></div><div style="margin-bottom:4px;padding-left:3px"><div style="height:3px;border-radius:2px;background:var(--ab);margin-bottom:2px"></div><div style="height:3px;border-radius:2px;background:var(--bd2)"></div></div><div style="padding-left:3px"><div style="height:3px;border-radius:2px;background:var(--ab);margin-bottom:2px"></div><div style="height:3px;border-radius:2px;background:var(--bd2)"></div></div></div><div class="tname">L05 타임라인</div></div>
+        <div class="tcard"><div class="tpre"><div style="display:grid;grid-template-columns:1fr 1fr;gap:3px"><div style="padding:4px;background:var(--al);border-radius:4px;height:24px"></div><div style="padding:4px;background:var(--gl);border-radius:4px;height:24px"></div></div></div><div class="tname">L06 포인트 카드</div></div>
+        <div class="tcard"><div class="tpre"><div style="height:24px;border-radius:4px;background:#1a1a2e;display:flex;align-items:center;justify-content:center;margin-bottom:3px"><div style="width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:9px solid rgba(255,255,255,.6)"></div></div><div style="height:3px;border-radius:2px;background:var(--bd2)"></div></div><div class="tname">L07 동영상</div></div>
+        <div class="tcard"><div class="tpre"><div style="display:flex;flex-direction:column;gap:2px"><div style="border:1px solid var(--bd);border-radius:3px;padding:2px 4px;font-size:7px;color:var(--t3);display:flex;justify-content:space-between">Q. 예약 기간? <span>+</span></div><div style="border:1px solid var(--bd);border-radius:3px;padding:2px 4px;font-size:7px;color:var(--t3);display:flex;justify-content:space-between">Q. 환불 정책? <span>+</span></div></div></div><div class="tname">L08 FAQ</div></div>
+        <div class="tcard"><div class="tpre"><div style="height:26px;border-radius:4px;background:linear-gradient(135deg,#d4e8ff,#c8f2e0);margin-bottom:3px"></div><div style="height:3px;border-radius:2px;background:var(--bd2)"></div></div><div class="tname">L09 지도 중심</div></div>
+        <div class="tcard"><div class="tpre"><div style="display:flex;gap:2px;margin-bottom:3px"><div style="flex:1;height:6px;border-radius:2px;background:var(--ab)"></div><div style="flex:1;height:6px;border-radius:2px;background:var(--bd2)"></div><div style="flex:1;height:6px;border-radius:2px;background:var(--bd2)"></div></div><div style="height:22px;background:var(--s);border-radius:4px"></div></div><div class="tname">L10 올인원 탭</div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">⚙️ 컴포넌트 · API</div><div class="pb">
+      <div class="rsec"><div class="rlbl">핵심 컴포넌트</div>
+        <div class="clist">
+          <div class="ci"><div class="cdot"></div><div><div class="cn">DynamicSection.vue</div><div class="cd">섹션 타입별 동적 렌더링</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">GallerySlider.vue</div><div class="cd">Swiper 메인+썸네일</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">DetailMapView.vue</div><div class="cd">카카오맵+주변+길찾기</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">ReviewList.vue</div><div class="cd">별점 분포 + 페이징</div></div></div>
+        </div>
+      </div>
+      <div class="rsec"><div class="rlbl">API</div>
+        <div class="alist">
+          <div class="ar"><span class="method mget">GET</span><div><div class="aurl">/api/travel/:id</div><div class="anote">상세 + sections JSON</div></div></div>
+          <div class="ar"><span class="method mget">GET</span><div><div class="aurl">/api/travel/:id/availability</div><div class="anote">예약 불가 날짜</div></div></div>
+          <div class="ar"><span class="method mget">GET</span><div><div class="aurl">/api/travel/nearby</div><div class="anote">반경 5km (Haversine)</div></div></div>
+        </div>
+      </div>
+      <div class="rsec"><div class="rlbl">섹션 블록 14종</div>
+        <div style="display:flex;flex-wrap:wrap;gap:3px">
+          <span class="tag tb" style="font-size:9px">HERO_GALLERY</span><span class="tag tgy" style="font-size:9px">INTRO_TEXT</span><span class="tag tg" style="font-size:9px">IMG_TEXT_L/R</span><span class="tag tgy" style="font-size:9px">IMG_GRID_2/3</span><span class="tag ta" style="font-size:9px">VIDEO_EMBED</span><span class="tag tb" style="font-size:9px">SCHEDULE_TABLE</span><span class="tag tg" style="font-size:9px">HIGHLIGHT_BOX</span><span class="tag tgy" style="font-size:9px">KAKAO_MAP</span><span class="tag ta" style="font-size:9px">FAQ_ACCORDION</span><span class="tag tgy" style="font-size:9px">PRICE_TABLE</span><span class="tag tr" style="font-size:9px">NOTICE_BOX</span><span class="tag tb" style="font-size:9px">REVIEW_LIST</span>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div>
+<div class="pnav"><button class="pnbtn" onclick="nav('p2')">&#8592; 02 검색 결과</button><span class="pninfo">SCR-03 / 09</span><button class="pnbtn pr" onclick="nav('p4')">04 예약·결제 &#8594;</button></div>
+</div>
+
+<!-- ═══════════════════════════════════ SCR-04 예약·결제 ═══════════════════════════════════ -->
+<div id="pg-p4" class="page">
+<div class="sw">
+  <div class="sh">
+    <div class="sc-num">SCR-04</div>
+    <div class="sc-tb">
+      <div class="sc-title">예약·결제</div>
+      <div class="sc-desc">날짜·인원·폼 입력·PG 결제까지 한 페이지 완료. VeeValidate 실시간 검증, Pinia computed 금액 계산, Spring <code>@Transactional</code>으로 원자적 처리합니다.</div>
+    </div>
+    <span class="rpill rp-h">Hybrid</span>
+  </div>
+  <div class="g3">
+    <div class="panel"><div class="ph">📐 와이어프레임</div><div class="pb">
+      <div class="wf">
+        <div class="wfc"><div style="display:flex;gap:4px"><div class="wfd" style="background:#ff5f57"></div><div class="wfd" style="background:#febc2e"></div><div class="wfd" style="background:#28c840"></div></div><div class="wfurl">/booking/1</div></div>
+        <div class="wb">
+          <div style="font-size:11.5px;font-weight:600;margin-bottom:7px">협재해수욕장 예약</div>
+          <div style="font-size:9px;color:var(--t3);margin-bottom:3px;font-weight:600">체크인 / 체크아웃</div>
+          <div style="display:flex;gap:4px;margin-bottom:5px">
+            <div style="flex:1;height:22px;border-radius:5px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 7px;font-size:9.5px;color:var(--t3)">📅 2025-08-01</div>
+            <span style="font-size:11px;color:var(--t3);align-self:center">~</span>
+            <div style="flex:1;height:22px;border-radius:5px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 7px;font-size:9.5px;color:var(--t3)">📅 2025-08-03</div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 7px;background:var(--w);border-radius:5px;border:1px solid var(--bd);margin-bottom:3px">
+            <span style="font-size:9.5px;color:var(--t3)">성인</span>
+            <div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:16px;border-radius:4px;background:var(--s);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:11px">−</div><span style="font-family:var(--mono);font-size:12px;font-weight:700">2</span><div style="width:16px;height:16px;border-radius:4px;background:var(--al);border:1px solid var(--ab);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--a)">+</div></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 7px;background:var(--w);border-radius:5px;border:1px solid var(--bd);margin-bottom:6px">
+            <span style="font-size:9.5px;color:var(--t3)">어린이</span>
+            <div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:16px;border-radius:4px;background:var(--s);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:11px">−</div><span style="font-family:var(--mono);font-size:12px;font-weight:700">0</span><div style="width:16px;height:16px;border-radius:4px;background:var(--al);border:1px solid var(--ab);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--a)">+</div></div>
+          </div>
+          <div style="margin-bottom:5px">
+            <div style="font-size:9px;color:var(--t3);margin-bottom:2px">이름 *</div>
+            <div style="height:20px;border-radius:4px;background:var(--w);border:1px solid var(--bd2);margin-bottom:3px"></div>
+            <div style="font-size:9px;color:var(--t3);margin-bottom:2px">연락처 * <span style="color:var(--r)">형식 오류</span></div>
+            <div style="height:20px;border-radius:4px;background:var(--rl);border:1.5px solid var(--rb);margin-bottom:3px"></div>
+            <div style="font-size:9px;color:var(--t3);margin-bottom:2px">이메일 *</div>
+            <div style="height:20px;border-radius:4px;background:var(--w);border:1px solid var(--bd2)"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-radius:6px;background:var(--gl);border:1px solid var(--gb);margin-bottom:5px">
+            <span style="font-size:10px;color:var(--g);font-weight:500">총 결제금액</span>
+            <span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--g)">100,000원</span>
+          </div>
+          <div class="wcta g">결제하기</div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">👣 사용자 시나리오</div><div class="pb">
+      <div class="steps">
+        <div class="step"><div class="sn2">1</div><div class="sb"><div class="st">날짜 선택 — 예약 불가 날짜 비활성화</div><div class="sd"><code>GET /api/travel/:id/availability</code>로 예약 불가 날짜를 받아와 달력에서 비활성화합니다. 날짜 선택 시 박 수 자동 계산 → Pinia <code>bookingStore</code>에 저장.</div><div class="tags"><span class="tag tb">DateRangePicker</span></div></div></div>
+        <div class="step"><div class="sn2">2</div><div class="sb"><div class="st">인원 ± 버튼 → 총액 실시간 갱신</div><div class="sd">Pinia <code>computed</code>: 단가 × 인원 × 박수 = 총액. ± 버튼마다 하단 총액이 즉시 바뀌어요. 최대 수용 인원 초과 시 + 버튼 비활성화.</div><div class="tags"><span class="tag tb">Pinia computed</span></div></div></div>
+        <div class="step"><div class="sn2">3</div><div class="sb"><div class="st">폼 입력 — 실시간 유효성 검사</div><div class="sd">VeeValidate + Yup: 이름(2자 이상) · 연락처(010 형식) · 이메일. 오류 필드는 빨간 테두리와 안내 문구 즉시 표시.</div><div class="tags"><span class="tag ta">VeeValidate + Yup</span></div></div></div>
+        <div class="step"><div class="sn2">4</div><div class="sb"><div class="st">결제 완료 → Spring @Transactional</div><div class="sd"><code>POST /api/reservation</code> 하나로 ①가용인원 차감 ②예약 INSERT ③PG 결제 확인 ④UUID 예약번호 ⑤CONFIRMED 변경이 하나의 트랜잭션. 오류 시 전체 롤백!</div><div class="tags"><span class="tag tg">@Transactional</span><span class="tag tg">@Async 이메일</span></div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">⚙️ 컴포넌트 · API</div><div class="pb">
+      <div class="rsec"><div class="rlbl">Vue 컴포넌트</div>
+        <div class="clist">
+          <div class="ci"><div class="cdot"></div><div><div class="cn">DateRangePicker.vue</div><div class="cd">체크인/아웃, 불가날짜 비활성</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">GuestCounter.vue</div><div class="cd">인원 ± 조절</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">BookingForm.vue</div><div class="cd">VeeValidate 폼 + 약관 동의</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">PaymentResult.vue</div><div class="cd">PG 콜백 수신 처리</div></div></div>
+        </div>
+      </div>
+      <div class="rsec"><div class="rlbl">API</div>
+        <div class="alist">
+          <div class="ar"><span class="method mget">GET</span><div><div class="aurl">/api/travel/:id/availability</div></div></div>
+          <div class="ar"><span class="method mpost">POST</span><div><div class="aurl">/api/reservation</div><div class="anote">예약+PG (@Transactional)</div></div></div>
+        </div>
+      </div>
+      <div class="warn"><div class="warntl">⚠️ 취소 환불 정책</div><div class="warnbd">7일 전~ 100% · 3~7일 전 80%<br>1~3일 전 50% · 당일 환불 불가</div></div>
+    </div></div>
+  </div>
+</div>
+<div class="pnav"><button class="pnbtn" onclick="nav('p3')">&#8592; 03 여행지 상세</button><span class="pninfo">SCR-04 / 09</span><button class="pnbtn pr" onclick="nav('p5')">05 예약 완료 &#8594;</button></div>
+</div>
+
+<!-- ═══════════════════════════════════ SCR-05 예약 완료 ═══════════════════════════════════ -->
+<div id="pg-p5" class="page">
+<div class="sw">
+  <div class="sh">
+    <div class="sc-num">SCR-05</div>
+    <div class="sc-tb">
+      <div class="sc-title">예약 완료</div>
+      <div class="sc-desc">결제 성공 후 예약번호·일정·금액과 오시는 길 지도를 표시. <code>@Async</code>로 이메일을 비동기 발송하며, Kakao Static Map API는 서버에서 호출해 이메일에 지도 이미지를 포함해요.</div>
+    </div>
+    <span class="rpill rp-d">완료 화면</span>
+  </div>
+  <div class="g3">
+    <div class="panel"><div class="ph">📐 와이어프레임</div><div class="pb">
+      <div class="wf">
+        <div class="wfc"><div style="display:flex;gap:4px"><div class="wfd" style="background:#ff5f57"></div><div class="wfd" style="background:#febc2e"></div><div class="wfd" style="background:#28c840"></div></div><div class="wfurl">/booking/complete</div></div>
+        <div class="wb">
+          <div style="text-align:center;margin-bottom:8px">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--gl);border:2px solid var(--gb);display:flex;align-items:center;justify-content:center;font-size:16px;margin:0 auto 5px;color:var(--g);font-weight:700">&#10003;</div>
+            <div style="font-size:11.5px;font-weight:700;margin-bottom:2px">예약이 완료되었어요!</div>
+            <div style="font-family:var(--mono);font-size:9px;color:var(--t3)">RESV-2025-001234</div>
+          </div>
+          <div style="background:var(--s);border-radius:7px;padding:8px;border:1px solid var(--bd);margin-bottom:6px">
+            <div style="display:flex;justify-content:space-between;font-size:9.5px;margin-bottom:2px"><span style="color:var(--t3)">여행지</span><span style="font-weight:600">협재해수욕장</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:9.5px;margin-bottom:2px"><span style="color:var(--t3)">체크인</span><span style="font-weight:600">2025-08-01</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:9.5px;margin-bottom:2px"><span style="color:var(--t3)">체크아웃</span><span style="font-weight:600">2025-08-03</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:9.5px"><span style="color:var(--t3)">결제금액</span><span style="font-weight:700;color:var(--g)">100,000원</span></div>
+          </div>
+          <div class="wfmap" style="height:50px;margin-bottom:5px"><div class="wfml">🗺️ 오시는 길 (카카오맵)</div><div class="pin" style="top:44%;left:50%;background:#d63030"></div></div>
+          <div style="font-size:9px;color:var(--t3);text-align:center;margin-bottom:6px">📧 확인 이메일이 발송됐어요</div>
+          <div style="display:flex;gap:5px"><div class="wcta b" style="flex:1">예약 내역 보기</div><div style="flex:1;height:27px;border-radius:7px;background:var(--s);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:500;color:var(--t2)">홈으로</div></div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">👣 사용자 시나리오</div><div class="pb">
+      <div class="steps">
+        <div class="step"><div class="sn2">1</div><div class="sb"><div class="st">완료 화면 진입 + URL 방어 처리</div><div class="sd">결제 성공 → <code>Router.push('/booking/complete?resvId=...')</code>. <code>resvId</code> 없는 직접 접속은 홈으로 리다이렉트. 히스토리 <code>replace</code> 처리로 뒤로가기 방지.</div></div></div>
+        <div class="step"><div class="sn2">2</div><div class="sb"><div class="st">카카오맵 미니 지도 — 오시는 길</div><div class="sd">여행지 위경도로 카카오맵 미니 지도를 표시합니다. 길찾기 버튼: 모바일 <code>kakaomap://</code> 딥링크, PC 웹.</div></div></div>
+        <div class="step"><div class="sn2">3</div><div class="sb"><div class="st">확인 이메일 자동 발송 (@Async)</div><div class="sd"><code>MailService.sendBookingConfirm()</code>이 <code>@Async</code>로 비동기 실행됩니다. Thymeleaf HTML + Kakao Static Map URL + 길찾기 링크 포함. REST API 키는 서버에서만 사용해 클라이언트 노출 방지!</div><div class="tags"><span class="tag tg">@Async</span><span class="tag ta">Kakao Static Map</span></div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">⚙️ API 연결</div><div class="pb">
+      <div class="alist"><div class="ar"><span class="method mget">GET</span><div><div class="aurl">/api/my/reservations/:id</div><div class="anote">완료 정보 조회</div></div></div></div>
+      <div class="tip" style="margin-top:10px"><div class="tiptl">🔐 보안 포인트</div><div class="tipbd">Static Map은 서버에서 URL을 만들어 이메일에 img 태그로 삽입해요. 카카오 REST API 키가 브라우저에 절대 노출되지 않아 안전합니다!</div></div>
+    </div></div>
+  </div>
+</div>
+<div class="pnav"><button class="pnbtn" onclick="nav('p4')">&#8592; 04 예약·결제</button><span class="pninfo">SCR-05 / 09</span><button class="pnbtn pr" onclick="nav('p6')">06 예약 내역 &#8594;</button></div>
+</div>
+
+<!-- ═══════════════════════════════════ SCR-06 예약 내역 ═══════════════════════════════════ -->
+<div id="pg-p6" class="page">
+<div class="sw">
+  <div class="sh">
+    <div class="sc-num">SCR-06</div>
+    <div class="sc-tb">
+      <div class="sc-title">예약 내역</div>
+      <div class="sc-desc">모든 예약을 상태별 탭으로 분류. 카드 클릭 시 카카오맵 미니맵이 포함된 상세 모달이 열리며, 이용 완료 건에는 리뷰 작성 버튼이 표시됩니다.</div>
+    </div>
+    <span class="rpill rp-v">Vue SPA</span>
+  </div>
+  <div class="g3">
+    <div class="panel"><div class="ph">📐 와이어프레임</div><div class="pb">
+      <div class="wf">
+        <div class="wfc"><div style="display:flex;gap:4px"><div class="wfd" style="background:#ff5f57"></div><div class="wfd" style="background:#febc2e"></div><div class="wfd" style="background:#28c840"></div></div><div class="wfurl">/my/reservations</div></div>
+        <div class="wb">
+          <div style="display:flex;gap:3px;margin-bottom:6px">
+            <div style="flex:1;padding:3px 5px;border-radius:5px;text-align:center;font-size:9px;font-weight:600;background:var(--gl);color:var(--g);border:1px solid var(--gb)">전체 4</div>
+            <div style="flex:1;padding:3px 5px;border-radius:5px;text-align:center;font-size:9px;background:var(--s);color:var(--t3);border:1px solid var(--bd)">확정 2</div>
+            <div style="flex:1;padding:3px 5px;border-radius:5px;text-align:center;font-size:9px;background:var(--s);color:var(--t3);border:1px solid var(--bd)">완료 1</div>
+            <div style="flex:1;padding:3px 5px;border-radius:5px;text-align:center;font-size:9px;background:var(--s);color:var(--t3);border:1px solid var(--bd)">취소 1</div>
+          </div>
+          <div style="padding:7px;background:var(--w);border-radius:7px;border:1px solid var(--bd);margin-bottom:4px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px"><span style="font-size:10.5px;font-weight:600">협재해수욕장</span><span style="font-size:8.5px;font-weight:600;background:var(--gl);color:var(--g);padding:1px 6px;border-radius:3px">예약확정</span></div>
+            <div style="font-size:9px;color:var(--t3);margin-bottom:4px">08.01~08.03 · 성인 2명</div>
+            <div style="display:flex;justify-content:flex-end;gap:3px"><div style="padding:2px 7px;border-radius:4px;font-size:9px;font-weight:600;background:var(--rl);color:var(--r)">취소 요청</div><div style="padding:2px 7px;border-radius:4px;font-size:9px;font-weight:600;background:var(--al);color:var(--a)">상세 보기</div></div>
+          </div>
+          <div style="padding:7px;background:var(--w);border-radius:7px;border:1px solid var(--bd);margin-bottom:4px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px"><span style="font-size:10.5px;font-weight:600">한라산 등반</span><span style="font-size:8.5px;font-weight:600;background:var(--s);color:var(--t3);padding:1px 6px;border-radius:3px">이용완료</span></div>
+            <div style="font-size:9px;color:var(--t3);margin-bottom:4px">07.15~07.16 · 성인 1명</div>
+            <div style="display:flex;justify-content:flex-end"><div style="padding:2px 7px;border-radius:4px;font-size:9px;font-weight:600;background:var(--aml);color:var(--am)">⭐ 리뷰 작성</div></div>
+          </div>
+          <div style="font-size:9px;color:var(--t3);text-align:center;padding:5px;border:1px dashed var(--bd2);border-radius:5px">카드 클릭 → 상세 모달 + 카카오맵 미니맵</div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">👣 사용자 시나리오</div><div class="pb">
+      <div class="steps">
+        <div class="step"><div class="sn2">1</div><div class="sb"><div class="st">전체 예약 로딩 + 스켈레톤 UI</div><div class="sd"><code>onMounted</code>에서 <code>GET /api/my/reservations</code>(위경도 포함)를 호출합니다. Pinia <code>reservationStore</code>에 저장. 로딩 중 스켈레톤 카드 3개 표시.</div></div></div>
+        <div class="step"><div class="sn2">2</div><div class="sb"><div class="st">상태 탭 — computed 로컬 필터</div><div class="sd">탭 클릭 시 API 재호출 없이 Pinia <code>computed</code>가 목록을 상태별 분류. 탭 배지에 건수 실시간 표시.</div><div class="tags"><span class="tag tb">Pinia computed</span></div></div></div>
+        <div class="step"><div class="sn2">3</div><div class="sb"><div class="st">카드 클릭 → 상세 모달 + 카카오 미니맵</div><div class="sd">예약번호·일정·금액·상태와 카카오맵 미니맵(300×200px)으로 여행지 위치 시각화. 길찾기 버튼 제공.</div><div class="tags"><span class="tag tb">카카오 미니맵</span></div></div></div>
+        <div class="step"><div class="sn2">4</div><div class="sb"><div class="st">취소 → 환불 정책 모달 → PG 환불</div><div class="sd"><code>GET cancel-policy</code>로 환불 금액 계산 후 모달 표시. 확인 시 <code>PATCH cancel</code>으로 DB 상태변경 + 가용인원 복구 + PG 환불 + 취소 이메일 처리.</div></div></div>
+        <div class="step"><div class="sn2">5</div><div class="sb"><div class="st">이용완료 → 리뷰 작성 인라인 폼</div><div class="sd"><code>statusCode=COMPLETED && reviewWritten=false</code> 조건 시 버튼 표시. 인라인 폼으로 별점+텍스트 → <code>POST /api/review</code>. 예약 1건당 1개 UNIQUE 제약.</div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">⚙️ 컴포넌트 · API</div><div class="pb">
+      <div class="rsec"><div class="rlbl">Vue 컴포넌트</div>
+        <div class="clist">
+          <div class="ci"><div class="cdot"></div><div><div class="cn">ReservationCard.vue</div><div class="cd">예약 카드, 상태 배지</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">ReservationModal.vue</div><div class="cd">상세 모달 + 카카오 미니맵</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">CancelPolicyModal.vue</div><div class="cd">환불 정책 + 취소 확인</div></div></div>
+          <div class="ci"><div class="cdot"></div><div><div class="cn">ReviewForm.vue</div><div class="cd">인라인 리뷰 작성 폼</div></div></div>
+        </div>
+      </div>
+      <div class="rsec"><div class="rlbl">API 연결</div>
+        <div class="alist">
+          <div class="ar"><span class="method mget">GET</span><div><div class="aurl">/api/my/reservations</div><div class="anote">위경도 포함</div></div></div>
+          <div class="ar"><span class="method mget">GET</span><div><div class="aurl">/api/reservation/:id/cancel-policy</div></div></div>
+          <div class="ar"><span class="method mpatch">PATCH</span><div><div class="aurl">/api/reservation/:id/cancel</div></div></div>
+          <div class="ar"><span class="method mpost">POST</span><div><div class="aurl">/api/review</div><div class="anote">리뷰 작성</div></div></div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div>
+<div class="pnav"><button class="pnbtn" onclick="nav('p5')">&#8592; 05 예약 완료</button><span class="pninfo">SCR-06 / 09</span><button class="pnbtn pr" onclick="nav('p7')">07 배너 관리 &#8594;</button></div>
+</div>
+
+<!-- ═══════════════════════════════════ ADM-01 배너 관리 ═══════════════════════════════════ -->
+<div id="pg-p7" class="page">
+<div class="sw">
+  <div class="sh">
+    <div class="sc-num">ADM-01</div>
+    <div class="sc-tb">
+      <div class="sc-title">관리자 — 메인 배너 관리</div>
+      <div class="sc-desc">관리자가 직접 메인 배너를 등록·수정·순서 변경합니다. <strong>최대 10개까지</strong> 등록 가능하며, 각 배너마다 노출 시작일/종료일을 설정할 수 있어요. <code>@Scheduled</code>로 만료 배너를 자동 비활성화합니다.</div>
+    </div>
+    <span class="rpill rp-e">eGov SSR + Vue</span>
+  </div>
+  <div class="g2">
+    <div class="panel"><div class="ph">📋 배너 목록 관리</div><div class="pb">
+      <div class="bcnt">
+        <div><div class="bcn">7 / 10</div><div style="font-size:10px;color:var(--am)">현재 등록된 배너 수</div></div>
+        <span class="blim">최대 10개까지 등록 가능</span>
+      </div>
+      <div style="display:flex;gap:5px;margin-bottom:8px">
+        <div style="flex:1;height:28px;border-radius:6px;background:var(--a);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;color:#fff">+ 새 배너 등록</div>
+        <div style="width:76px;height:28px;border-radius:6px;background:var(--gl);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;color:var(--g)">순서 저장</div>
+      </div>
+      <div class="bitem"><div class="bthumb" style="background:linear-gradient(135deg,var(--al),var(--gl))"></div><div class="binfo"><div class="btitle">제주 여름 특가 프로모션</div><div class="bdate">📅 2025-07-01 ~ 2025-08-31</div></div><span class="bst bon">노출중</span><span style="color:var(--t3);font-size:13px;cursor:grab;margin:0 4px">⠿</span><div style="display:flex;gap:3px"><span class="bact">수정</span><span class="bact" style="color:var(--r)">삭제</span></div></div>
+      <div class="bitem"><div class="bthumb" style="background:linear-gradient(135deg,var(--aml),var(--rl))"></div><div class="binfo"><div class="btitle">가을 단풍 여행지 추천</div><div class="bdate">📅 2025-09-01 ~ 2025-11-30</div></div><span class="bst bwait">예약됨</span><span style="color:var(--t3);font-size:13px;cursor:grab;margin:0 4px">⠿</span><div style="display:flex;gap:3px"><span class="bact">수정</span><span class="bact" style="color:var(--r)">삭제</span></div></div>
+      <div class="bitem"><div class="bthumb" style="background:linear-gradient(135deg,var(--gl),var(--al))"></div><div class="binfo"><div class="btitle">겨울 스키 시즌 오픈</div><div class="bdate">📅 2025-12-01 ~ 2026-02-28</div></div><span class="bst bwait">예약됨</span><span style="color:var(--t3);font-size:13px;cursor:grab;margin:0 4px">⠿</span><div style="display:flex;gap:3px"><span class="bact">수정</span><span class="bact" style="color:var(--r)">삭제</span></div></div>
+      <div class="bitem" style="opacity:.42"><div class="bthumb" style="background:var(--s)"></div><div class="binfo"><div class="btitle">봄 벚꽃 여행 특집</div><div class="bdate">📅 2025-03-01 ~ 2025-04-30</div></div><span class="bst bend">종료</span><span style="color:var(--t3);font-size:13px;cursor:grab;margin:0 4px">⠿</span><div style="display:flex;gap:3px"><span class="bact">복원</span><span class="bact" style="color:var(--r)">삭제</span></div></div>
+      <div style="font-size:9px;color:var(--t3);text-align:center;margin-top:7px;padding:5px;background:var(--s);border-radius:5px;border:1px solid var(--bd)">⠿ 핸들 드래그로 순서 변경 → 순서 저장 버튼 클릭</div>
+    </div></div>
+    <div class="panel"><div class="ph">📝 배너 등록/수정 폼</div><div class="pb">
+      <div style="font-size:12px;font-weight:600;margin-bottom:12px">새 배너 등록</div>
+      <div style="margin-bottom:8px">
+        <div style="font-size:9.5px;font-weight:700;color:var(--t3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">배너 이미지 *</div>
+        <div style="height:56px;border-radius:7px;border:2px dashed var(--bd2);background:var(--s);display:flex;align-items:center;justify-content:center;margin-bottom:3px"><span style="font-size:10.5px;color:var(--t3)">📎 이미지 업로드 (권장: 1920x600px)</span></div>
+        <div style="font-size:9px;color:var(--t3)">JPG/PNG, 최대 5MB</div>
+      </div>
+      <div style="margin-bottom:7px">
+        <div style="font-size:9.5px;font-weight:700;color:var(--t3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em">배너 제목 *</div>
+        <div style="height:26px;border-radius:5px;background:var(--w);border:1px solid var(--bd2)"></div>
+      </div>
+      <div style="margin-bottom:7px">
+        <div style="font-size:9.5px;font-weight:700;color:var(--t3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em">클릭 링크 URL</div>
+        <div style="height:26px;border-radius:5px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 8px;font-size:9.5px;color:var(--t3)">/search?categoryCode=BEACH</div>
+      </div>
+      <div style="margin-bottom:8px">
+        <div style="font-size:9.5px;font-weight:700;color:var(--t3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">노출 기간 * <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9px">(날짜 선택)</span></div>
+        <div style="display:flex;gap:5px;align-items:center;margin-bottom:3px">
+          <div style="flex:1;height:26px;border-radius:5px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 8px;font-size:9.5px;color:var(--t3)">📅 시작일</div>
+          <span style="font-size:11px;color:var(--t3)">~</span>
+          <div style="flex:1;height:26px;border-radius:5px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 8px;font-size:9.5px;color:var(--t3)">📅 종료일</div>
+        </div>
+        <div style="font-size:9px;color:var(--t3)">종료일 미입력 시 무기한 노출. @Scheduled로 자동 종료.</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:11px">
+        <div style="width:15px;height:15px;border-radius:3px;background:var(--a);border:1px solid var(--ab);display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff">✓</div>
+        <span style="font-size:11px;color:var(--t2)">즉시 노출 활성화</span>
+      </div>
+      <div style="display:flex;gap:5px">
+        <div class="wcta b" style="flex:2;border-radius:7px">배너 저장</div>
+        <div style="flex:1;height:27px;border-radius:7px;background:var(--s);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:10.5px;color:var(--t2)">취소</div>
+      </div>
+    </div></div>
+  </div>
+  <div class="g2s" style="margin-top:14px">
+    <div class="panel"><div class="ph">👣 관리자 시나리오 — 배너 등록 플로우</div><div class="pb">
+      <div class="steps">
+        <div class="step"><div class="sn2">1</div><div class="sb"><div class="st">배너 등록 수 제한 체크 (최대 10개)</div><div class="sd">현재 등록 수가 10개에 도달하면 "새 배너 등록" 버튼이 비활성화됩니다. 상단 카운터 <code>7/10</code>으로 현황을 한눈에 확인. 종료된 배너를 삭제하면 슬롯이 복구돼요.</div><div class="tags"><span class="tag ta">최대 10개 제한</span></div></div></div>
+        <div class="step"><div class="sn2">2</div><div class="sb"><div class="st">이미지 + 링크 + 날짜 설정</div><div class="sd">이미지(최대 5MB, 1920×600px)를 업로드하고 클릭 시 이동할 링크 URL, 노출 시작/종료일을 설정합니다. 종료일을 비워두면 무기한 노출이에요.</div></div></div>
+        <div class="step"><div class="sn2">3</div><div class="sb"><div class="st">저장 → @CacheEvict → 사용자 즉시 반영</div><div class="sd"><code>POST /admin/main-content</code> 저장 시 <code>@CacheEvict("mainContent")</code>가 실행되어 캐시가 즉시 무효화됩니다. 다음 사용자 접속부터 새 배너가 메인 홈에 자동 표시돼요!</div><div class="tags"><span class="tag tg">@CacheEvict</span></div></div></div>
+        <div class="step"><div class="sn2">4</div><div class="sb"><div class="st">순서 드래그&드롭 → 일괄 저장</div><div class="sd">배너 목록의 ⠿ 핸들을 드래그해 순서를 변경하고 "순서 저장" 버튼 클릭 시 <code>PATCH /admin/main-content/reorder</code>로 <code>SORT_ORDER</code>를 일괄 업데이트합니다.</div></div></div>
+        <div class="step"><div class="sn2">5</div><div class="sb"><div class="st">노출 기간 만료 → @Scheduled 자동 비활성화</div><div class="sd">매일 자정 <code>@Scheduled</code>가 <code>TB_MAIN_CONTENT</code>를 스캔해 <code>END_DT ≤ 현재시간</code>인 항목의 <code>USE_YN = 'N'</code>으로 자동 업데이트. 수동 종료 불필요!</div><div class="tags"><span class="tag tg">@Scheduled</span></div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">⚙️ API 연결</div><div class="pb">
+      <div class="alist">
+        <div class="ar"><span class="method mget">GET</span><div><div class="aurl">/admin/main-content</div><div class="anote">배너 목록 조회</div></div></div>
+        <div class="ar"><span class="method mpost">POST</span><div><div class="aurl">/admin/main-content</div><div class="anote">등록 (@CacheEvict, 최대 10개)</div></div></div>
+        <div class="ar"><span class="method mpatch">PATCH</span><div><div class="aurl">/admin/main-content/:id</div><div class="anote">배너 수정</div></div></div>
+        <div class="ar"><span class="method mpatch">PATCH</span><div><div class="aurl">/admin/main-content/reorder</div><div class="anote">순서 일괄 변경</div></div></div>
+        <div class="ar"><span class="method mdel">DELETE</span><div><div class="aurl">/admin/main-content/:id</div><div class="anote">배너 삭제</div></div></div>
+      </div>
+      <div class="tip" style="margin-top:10px"><div class="tiptl">💡 TB_MAIN_CONTENT</div><div class="tipbd">AREA_CODE · TITLE · IMG_PATH · LINK_URL · SORT_ORDER · USE_YN · START_DT · END_DT</div></div>
+    </div></div>
+  </div>
+</div>
+<div class="pnav"><button class="pnbtn" onclick="nav('p6')">&#8592; 06 예약 내역</button><span class="pninfo">ADM-01 / 09</span><button class="pnbtn pr" onclick="nav('p8')">08 여행지 관리 &#8594;</button></div>
+</div>
+
+<!-- ═══════════════════════════════════ ADM-02 여행지 관리 ═══════════════════════════════════ -->
+<div id="pg-p8" class="page">
+<div class="sw">
+  <div class="sh">
+    <div class="sc-num">ADM-02</div>
+    <div class="sc-tb">
+      <div class="sc-title">관리자 — 여행지 관리 &amp; 템플릿 빌더</div>
+      <div class="sc-desc">여행지 등록 시 카카오맵으로 지도 핀을 설정하고, 10종 레이아웃 중 하나를 선택한 뒤 섹션 블록 14종을 드래그&드롭으로 조합해 고유한 상세 페이지를 구성합니다.</div>
+    </div>
+    <span class="rpill rp-e">eGov SSR + Vue</span>
+  </div>
+  <div class="g2">
+    <div class="panel"><div class="ph">📍 Step 1 — 지도 핀 설정</div><div class="pb">
+      <div class="infob"><div class="inftl">왜 지도 핀 설정이 중요한가?</div><div class="infbd">관리자가 핀으로 저장한 위도·경도가 ①검색 결과 마커 ②여행지 상세 위치 지도 ③반경 5km 주변 계산 ④예약 이메일 Static Map에 모두 자동 반영돼요.</div></div>
+      <div class="wfmap" style="height:84px;margin-bottom:7px">
+        <div class="wfml">🗺️ 카카오맵 지도 핀 설정<br><span style="font-size:8.5px;opacity:.7">클릭하거나 주소 검색</span></div>
+        <div class="pin" style="top:45%;left:50%;background:#d63030"></div>
+      </div>
+      <div style="display:flex;gap:4px;margin-bottom:6px"><div style="flex:1;height:26px;border-radius:5px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 8px;font-size:9.5px;color:var(--t3)">주소 검색 (Kakao Places API)</div><div style="width:32px;height:26px;border-radius:5px;background:var(--a);flex-shrink:0"></div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px">
+        <div><div style="font-size:9px;color:var(--t3);margin-bottom:2px">위도 (자동 입력)</div><div style="height:23px;border-radius:4px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 7px;font-family:var(--mono);font-size:9px">33.3946</div></div>
+        <div><div style="font-size:9px;color:var(--t3);margin-bottom:2px">경도 (자동 입력)</div><div style="height:23px;border-radius:4px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 7px;font-family:var(--mono);font-size:9px">126.2392</div></div>
+      </div>
+      <div style="font-size:9px;color:var(--t3);background:var(--s);border-radius:5px;padding:7px;line-height:1.8">📌 지도 클릭 → Geocoder 역지오코딩 → 주소 자동완성<br>📌 주소 검색 → map.panTo() + 핀 이동<br>📌 핀 드래그 → 위경도 input 자동 갱신</div>
+    </div></div>
+    <div class="panel"><div class="ph">🎨 Step 2 — 레이아웃 + 섹션 블록 빌더</div><div class="pb">
+      <div style="font-size:9.5px;font-weight:700;color:var(--t3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">레이아웃 선택 (10종)</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-bottom:11px">
+        <div style="border:2px solid var(--a);border-radius:6px;padding:4px;text-align:center;background:var(--al)"><div style="height:19px;border-radius:3px;background:var(--ab);margin-bottom:2px"></div><div style="font-size:7.5px;color:var(--a);font-weight:700">L01</div></div>
+        <div style="border:1px solid var(--bd);border-radius:6px;padding:4px;text-align:center"><div style="height:19px;border-radius:3px;background:var(--s);margin-bottom:2px"></div><div style="font-size:7.5px;color:var(--t3)">L02</div></div>
+        <div style="border:1px solid var(--bd);border-radius:6px;padding:4px;text-align:center"><div style="height:19px;border-radius:3px;background:var(--s);margin-bottom:2px"></div><div style="font-size:7.5px;color:var(--t3)">L03</div></div>
+        <div style="border:1px solid var(--bd);border-radius:6px;padding:4px;text-align:center"><div style="height:19px;border-radius:3px;background:var(--s);margin-bottom:2px"></div><div style="font-size:7.5px;color:var(--t3)">L04</div></div>
+        <div style="border:1px solid var(--bd);border-radius:6px;padding:4px;text-align:center"><div style="height:19px;border-radius:3px;background:var(--s);margin-bottom:2px"></div><div style="font-size:7.5px;color:var(--t3)">L05</div></div>
+      </div>
+      <div style="font-size:9.5px;font-weight:700;color:var(--t3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">섹션 블록 팔레트 — 드래그&드롭</div>
+      <div class="bkgrid">
+        <div class="bk"><div class="bkico">G</div><div><div class="bkn">HERO_GALLERY</div><div class="bkd">풀스크린 갤러리</div></div></div>
+        <div class="bk"><div class="bkico" style="background:var(--gl);color:var(--g)">T</div><div><div class="bkn">INTRO_TEXT</div><div class="bkd">제목+본문 텍스트</div></div></div>
+        <div class="bk"><div class="bkico" style="background:var(--aml);color:var(--am)">L</div><div><div class="bkn">IMG_TEXT_L/R</div><div class="bkd">이미지+텍스트 좌/우</div></div></div>
+        <div class="bk"><div class="bkico" style="background:var(--rl);color:var(--r)">G</div><div><div class="bkn">IMG_GRID_2/3</div><div class="bkd">2/3열 이미지 그리드</div></div></div>
+        <div class="bk"><div class="bkico" style="background:var(--gy);color:var(--t2)">V</div><div><div class="bkn">VIDEO_EMBED</div><div class="bkd">동영상 삽입</div></div></div>
+        <div class="bk"><div class="bkico" style="background:var(--gl);color:var(--g)">S</div><div><div class="bkn">SCHEDULE_TABLE</div><div class="bkd">일정 타임라인</div></div></div>
+        <div class="bk"><div class="bkico">H</div><div><div class="bkn">HIGHLIGHT_BOX</div><div class="bkd">핵심 포인트 카드</div></div></div>
+        <div class="bk"><div class="bkico" style="background:var(--aml);color:var(--am)">M</div><div><div class="bkn">KAKAO_MAP</div><div class="bkd">지도 위치 블록</div></div></div>
+      </div>
+      <div style="border:1.5px dashed var(--bd2);border-radius:7px;padding:7px;background:var(--s);min-height:52px">
+        <div style="font-size:9px;color:var(--t3);margin-bottom:4px;text-align:center">섹션 빌더 — 블록을 드래그해서 여기에 배치</div>
+        <div style="display:flex;align-items:center;gap:5px;padding:4px 7px;background:var(--w);border-radius:5px;border:1px solid var(--bd);margin-bottom:3px"><span style="font-size:9px;color:var(--t3)">⠿</span><span style="font-size:9.5px;font-weight:600">1. HERO_GALLERY</span><span style="margin-left:auto;font-size:9px;color:var(--r)">✕</span></div>
+        <div style="display:flex;align-items:center;gap:5px;padding:4px 7px;background:var(--w);border-radius:5px;border:1px solid var(--bd)"><span style="font-size:9px;color:var(--t3)">⠿</span><span style="font-size:9.5px;font-weight:600">2. INTRO_TEXT</span><span style="margin-left:auto;font-size:9px;color:var(--r)">✕</span></div>
+      </div>
+    </div></div>
+  </div>
+  <div class="g2s" style="margin-top:14px">
+    <div class="panel"><div class="ph">👣 관리자 시나리오 — 여행지 등록 6단계</div><div class="pb">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="steps">
+          <div class="step"><div class="sn2">1</div><div class="sb"><div class="st">기본 정보 입력</div><div class="sd">여행지명, 지역 코드, 카테고리, 가격, 주소를 입력합니다. 주소 입력 시 Kakao Geocoder로 자동 위경도 변환 또는 지도 직접 클릭으로 설정.</div></div></div>
+          <div class="step"><div class="sn2">2</div><div class="sb"><div class="st">지도 핀 설정</div><div class="sd">Kakao Places API로 주소 검색 → 지도 이동 + 핀 자동 설정. 지도 클릭 시 역지오코딩으로 주소 자동완성. 핀 드래그로 위경도 미세 조정.</div><div class="tags"><span class="tag tb">Kakao Places</span><span class="tag tb">Geocoder</span></div></div></div>
+          <div class="step"><div class="sn2">3</div><div class="sb"><div class="st">이미지 업로드</div><div class="sd">다중 이미지 → <code>multipart/form-data POST</code> → 서버 저장 → <code>TB_TRAVEL_IMG INSERT</code>. <code>SORT_ORDER=1</code>이 대표이미지.</div></div></div>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="sn2">4</div><div class="sb"><div class="st">레이아웃 선택 (10종)</div><div class="sd">여행지 성격에 맞는 레이아웃을 선택합니다. 해수욕장 → 히어로 갤러리형, 투어 패키지 → 타임라인 일정형.</div></div></div>
+          <div class="step"><div class="sn2">5</div><div class="sb"><div class="st">섹션 블록 드래그&드롭</div><div class="sd">팔레트에서 블록을 드래그해 빌더 영역에 배치하고 순서를 조정합니다. 각 블록 설정 패널에서 이미지·텍스트·링크를 입력.</div><div class="tags"><span class="tag tb">Sortable.js</span></div></div></div>
+          <div class="step"><div class="sn2">6</div><div class="sb"><div class="st">저장 → sections JSON → @CacheEvict</div><div class="sd">섹션 배열을 <code>JSON.stringify</code>해서 <code>PATCH /admin/travel/:id/sections</code>로 저장. <code>@CacheEvict</code>로 캐시 무효화 → 사용자 상세 페이지 즉시 반영!</div><div class="tags"><span class="tag tg">@CacheEvict</span></div></div></div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">⚙️ API 연결</div><div class="pb">
+      <div class="alist">
+        <div class="ar"><span class="method mpost">POST</span><div><div class="aurl">/admin/travel</div><div class="anote">여행지 등록</div></div></div>
+        <div class="ar"><span class="method mpatch">PATCH</span><div><div class="aurl">/admin/travel/:id/sections</div><div class="anote">섹션 JSON (@CacheEvict)</div></div></div>
+        <div class="ar"><span class="method mpost">POST</span><div><div class="aurl">/admin/travel/:id/images</div><div class="anote">이미지 업로드</div></div></div>
+        <div class="ar"><span class="method mget">GET</span><div><div class="aurl">/api/map/geocode</div><div class="anote">주소→위경도 서버 프록시</div></div></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+<div class="pnav"><button class="pnbtn" onclick="nav('p7')">&#8592; 07 배너 관리</button><span class="pninfo">ADM-02 / 09</span><button class="pnbtn pr" onclick="nav('p9')">09 사용자 관리 &#8594;</button></div>
+</div>
+
+<!-- ═══════════════════════════════════ ADM-03 사용자 관리 ═══════════════════════════════════ -->
+<div id="pg-p9" class="page">
+<div class="sw">
+  <div class="sh">
+    <div class="sc-num">ADM-03</div>
+    <div class="sc-tb">
+      <div class="sc-title">관리자 — 사용자 관리</div>
+      <div class="sc-desc">ROLE_ADMIN 전용. 전체 회원 목록 조회, 복합 검색(이름/이메일/권한/상태/가입일), 권한 변경(USER↔ADMIN), 계정 정지·활성화, 상세 통계 조회. Spring Security Role 변경 시 즉시 세션에 반영.</div>
+    </div>
+    <span class="rpill rp-e">eGov SSR</span>
+  </div>
+  <!-- 검색 필터 -->
+  <div class="panel" style="margin-bottom:14px"><div class="ph">🔍 복합 검색 필터 — eGovFrame SearchVO 패턴</div><div class="pb">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:8px;align-items:end">
+      <div><div style="font-size:9.5px;font-weight:700;color:var(--t3);margin-bottom:3px">이름 / 이메일</div><div style="height:30px;border-radius:6px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 10px;font-size:9.5px;color:var(--t3)">🔍 이름 또는 이메일 입력...</div></div>
+      <div><div style="font-size:9.5px;font-weight:700;color:var(--t3);margin-bottom:3px">권한</div><div style="height:30px;border-radius:6px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 10px;font-size:9.5px;color:var(--t3)">전체 ▾</div></div>
+      <div><div style="font-size:9.5px;font-weight:700;color:var(--t3);margin-bottom:3px">상태</div><div style="height:30px;border-radius:6px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 10px;font-size:9.5px;color:var(--t3)">전체 ▾</div></div>
+      <div><div style="font-size:9.5px;font-weight:700;color:var(--t3);margin-bottom:3px">가입일</div><div style="height:30px;border-radius:6px;background:var(--w);border:1px solid var(--bd2);display:flex;align-items:center;padding:0 10px;font-size:9.5px;color:var(--t3)">기간 선택 ▾</div></div>
+      <div style="height:30px;padding:0 16px;border-radius:6px;background:var(--a);color:#fff;font-size:10.5px;font-weight:600;display:flex;align-items:center;cursor:pointer">검색</div>
+    </div>
+  </div></div>
+  <!-- 사용자 테이블 -->
+  <div class="panel" style="margin-bottom:14px"><div class="ph">👥 사용자 목록 — 총 1,842명</div><div class="pb">
+    <div style="overflow-x:auto">
+      <table class="utbl">
+        <thead><tr>
+          <th style="width:28px"><input type="checkbox" style="width:12px;height:12px"></th>
+          <th>회원 정보</th><th>이메일</th><th>연락처</th><th>권한</th><th>상태</th>
+          <th style="text-align:center">예약수</th><th>가입일</th><th>관리</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><input type="checkbox" style="width:12px;height:12px"></td><td><div style="display:flex;align-items:center;gap:6px"><div class="uavt" style="background:var(--al);color:var(--a)">홍</div><div style="font-size:12px;font-weight:600">홍길동</div></div></td><td style="color:var(--t2)">hong@email.com</td><td style="color:var(--t2)">010-1234-5678</td><td><span class="rusr">USER</span></td><td><span class="sok">정상</span></td><td style="text-align:center">7</td><td style="color:var(--t3)">2024-03-15</td><td><div style="display:flex;gap:3px"><span class="ubtn info">상세</span><span class="ubtn danger">정지</span></div></td></tr>
+          <tr><td><input type="checkbox" style="width:12px;height:12px"></td><td><div style="display:flex;align-items:center;gap:6px"><div class="uavt" style="background:var(--gl);color:var(--g)">김</div><div style="font-size:12px;font-weight:600">김민지</div></div></td><td style="color:var(--t2)">minji@email.com</td><td style="color:var(--t2)">010-9876-5432</td><td><span class="radm">ADMIN</span></td><td><span class="sok">정상</span></td><td style="text-align:center">2</td><td style="color:var(--t3)">2024-01-08</td><td><div style="display:flex;gap:3px"><span class="ubtn info">상세</span><span class="ubtn warn">권한↓</span></div></td></tr>
+          <tr><td><input type="checkbox" style="width:12px;height:12px"></td><td><div style="display:flex;align-items:center;gap:6px"><div class="uavt" style="background:var(--aml);color:var(--am)">이</div><div style="font-size:12px;font-weight:600">이준호</div></div></td><td style="color:var(--t2)">junho@email.com</td><td style="color:var(--t2)">010-5555-7777</td><td><span class="rusr">USER</span></td><td><span class="sstop">정지</span></td><td style="text-align:center">0</td><td style="color:var(--t3)">2024-05-22</td><td><div style="display:flex;gap:3px"><span class="ubtn info">상세</span><span class="ubtn success">활성화</span></div></td></tr>
+          <tr><td><input type="checkbox" style="width:12px;height:12px"></td><td><div style="display:flex;align-items:center;gap:6px"><div class="uavt" style="background:var(--rl);color:var(--r)">박</div><div style="font-size:12px;font-weight:600">박서연</div></div></td><td style="color:var(--t2)">seoyeon@email.com</td><td style="color:var(--t2)">010-3333-4444</td><td><span class="rusr">USER</span></td><td><span class="sok">정상</span></td><td style="text-align:center">14</td><td style="color:var(--t3)">2023-11-30</td><td><div style="display:flex;gap:3px"><span class="ubtn info">상세</span><span class="ubtn danger">정지</span></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:11px;color:var(--t3)">총 1,842명 · 1-4 / 1842</div>
+      <div style="display:flex;gap:3px">
+        <div style="padding:3px 9px;border-radius:5px;font-size:11px;border:1px solid var(--bd);color:var(--t3)">◀</div>
+        <div style="padding:3px 9px;border-radius:5px;font-size:11px;background:var(--a);color:#fff">1</div>
+        <div style="padding:3px 9px;border-radius:5px;font-size:11px;border:1px solid var(--bd);color:var(--t2)">2</div>
+        <div style="padding:3px 9px;border-radius:5px;font-size:11px;border:1px solid var(--bd);color:var(--t2)">3</div>
+        <div style="padding:3px 9px;border-radius:5px;font-size:11px;border:1px solid var(--bd);color:var(--t3)">▶</div>
+      </div>
+      <div style="display:flex;gap:4px">
+        <div style="padding:3px 10px;border-radius:5px;font-size:11px;background:var(--rl);color:var(--r);border:1px solid var(--rb);cursor:pointer">선택 정지</div>
+        <div style="padding:3px 10px;border-radius:5px;font-size:11px;background:var(--gl);color:var(--g);border:1px solid var(--gb);cursor:pointer">선택 활성화</div>
+        <div style="padding:3px 10px;border-radius:5px;font-size:11px;background:var(--al);color:var(--a);border:1px solid var(--ab);cursor:pointer">CSV 다운로드</div>
+      </div>
+    </div>
+  </div></div>
+  <!-- 상세 모달 + 시나리오 -->
+  <div class="g2">
+    <div class="panel"><div class="ph">👤 사용자 상세 모달</div><div class="pb">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">
+        <div class="uavt" style="width:42px;height:42px;font-size:16px;background:var(--al);color:var(--a)">홍</div>
+        <div><div style="font-size:14px;font-weight:600;margin-bottom:2px">홍길동</div><div style="font-size:11px;color:var(--t3)">hong@email.com · 010-1234-5678</div></div>
+        <span class="rusr" style="margin-left:auto">USER</span>
+      </div>
+      <div class="dvd"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px">
+        <div style="padding:8px;background:var(--gl);border-radius:8px;text-align:center"><div style="font-size:19px;font-weight:700;color:var(--g)">7</div><div style="font-size:9px;color:var(--g)">총 예약 수</div></div>
+        <div style="padding:8px;background:var(--al);border-radius:8px;text-align:center"><div style="font-size:19px;font-weight:700;color:var(--a)">3</div><div style="font-size:9px;color:var(--a)">완료 예약</div></div>
+        <div style="padding:8px;background:var(--aml);border-radius:8px;text-align:center"><div style="font-size:19px;font-weight:700;color:var(--am)">5</div><div style="font-size:9px;color:var(--am)">찜 목록</div></div>
+        <div style="padding:8px;background:var(--s);border-radius:8px;text-align:center"><div style="font-size:19px;font-weight:700;color:var(--t2)">2</div><div style="font-size:9px;color:var(--t3)">작성 리뷰</div></div>
+      </div>
+      <div style="font-size:9.5px;font-weight:700;color:var(--t3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em">최근 예약 내역</div>
+      <div style="font-size:11px;padding:5px 8px;background:var(--s);border-radius:5px;border:1px solid var(--bd);margin-bottom:3px;display:flex;justify-content:space-between"><span>협재해수욕장</span><span style="color:var(--g);font-weight:600">확정</span></div>
+      <div style="font-size:11px;padding:5px 8px;background:var(--s);border-radius:5px;border:1px solid var(--bd);margin-bottom:11px;display:flex;justify-content:space-between"><span>한라산 등반</span><span style="color:var(--t3)">완료</span></div>
+      <div class="dvd"></div>
+      <div style="font-size:9.5px;font-weight:700;color:var(--t3);margin-bottom:7px;text-transform:uppercase;letter-spacing:.05em">권한 및 상태 관리</div>
+      <div style="display:flex;gap:6px">
+        <div style="flex:1;height:28px;border-radius:6px;background:var(--al);border:1px solid var(--ab);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;color:var(--a);cursor:pointer">ADMIN으로 승격</div>
+        <div style="flex:1;height:28px;border-radius:6px;background:var(--rl);border:1px solid var(--rb);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;color:var(--r);cursor:pointer">계정 정지</div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="ph">👣 관리자 시나리오</div><div class="pb">
+      <div class="steps">
+        <div class="step"><div class="sn2">1</div><div class="sb"><div class="st">복합 검색 — SearchVO 패턴</div><div class="sd">이름/이메일, 권한(USER/ADMIN), 상태(정상/정지), 가입일 범위를 조합한 복합 검색. eGovFrame SearchVO 패턴으로 동적 쿼리를 생성해요.</div><div class="tags"><span class="tag tgy">eGovFrame SearchVO</span></div></div></div>
+        <div class="step"><div class="sn2">2</div><div class="sb"><div class="st">권한 변경 (USER ↔ ADMIN)</div><div class="sd"><code>PATCH /admin/members/:id/role</code>로 ROLE 변경. Spring Security 세션에 즉시 반영. 자신의 권한은 변경 불가(방어 처리).</div><div class="tags"><span class="tag tb">Spring Security</span></div></div></div>
+        <div class="step"><div class="sn2">3</div><div class="sb"><div class="st">계정 정지 — USE_YN='N' + 세션 무효화</div><div class="sd"><code>PATCH /admin/members/:id/status</code>로 <code>USE_YN = 'N'</code> 변경. 기존 세션은 즉시 무효화됩니다.</div><div class="tags"><span class="tag tr">세션 무효화</span></div></div></div>
+        <div class="step"><div class="sn2">4</div><div class="sb"><div class="st">상세 모달 — 예약/찜/리뷰 통계</div><div class="sd">사용자 이름 클릭 시 상세 모달. 총 예약·완료·찜·리뷰 통계와 최근 예약 목록을 함께 보여줘요.</div></div></div>
+        <div class="step"><div class="sn2">5</div><div class="sb"><div class="st">일괄 처리 + CSV 다운로드</div><div class="sd">체크박스 다중 선택 후 선택 정지/활성화로 일괄 처리. CSV 다운로드로 회원 데이터를 엑셀로 내보낼 수 있어요.</div></div></div>
+      </div>
+      <div class="rsec" style="margin-top:4px"><div class="rlbl">API 연결</div>
+        <div class="alist">
+          <div class="ar"><span class="method mget">GET</span><div><div class="aurl">/admin/members</div><div class="anote">SearchVO 복합 검색</div></div></div>
+          <div class="ar"><span class="method mget">GET</span><div><div class="aurl">/admin/members/:id</div><div class="anote">상세 + 예약 통계</div></div></div>
+          <div class="ar"><span class="method mpatch">PATCH</span><div><div class="aurl">/admin/members/:id/role</div><div class="anote">권한 변경 (즉시 세션 반영)</div></div></div>
+          <div class="ar"><span class="method mpatch">PATCH</span><div><div class="aurl">/admin/members/:id/status</div><div class="anote">정지/활성화</div></div></div>
+          <div class="ar"><span class="method mpost">POST</span><div><div class="aurl">/admin/members/batch</div><div class="anote">일괄 상태 변경</div></div></div>
+        </div>
+      </div>
+      <div class="danb"><div class="dantl">⚠️ 주의사항</div><div class="danbd">자기 자신의 권한 변경 불가. 관리자 계정은 최소 1개 이상 유지 강제.</div></div>
+    </div></div>
+  </div>
+</div>
+<div class="pnav"><button class="pnbtn" onclick="nav('p8')">&#8592; 08 여행지 관리</button><span class="pninfo">ADM-03 / 09</span><button class="pnbtn pr" onclick="nav('db')">DB · API &#8594;</button></div>
+</div>
+
+<!-- ═══════════════════════════════════ 전체 화면 흐름도 ═══════════════════════════════════ -->
+<div id="pg-flow" class="page">
+<div class="sw">
+  <div class="sh">
+    <div class="sc-num">FLOW</div>
+    <div class="sc-tb">
+      <div class="sc-title">전체 화면 흐름도</div>
+      <div class="sc-desc">사용자 흐름 · 관리자 흐름 · 핵심 기술 흐름을 한눈에 확인하세요. 각 노드를 클릭하면 해당 화면 상세로 이동합니다.</div>
+    </div>
+  </div>
+
+  <!-- 사용자 흐름 -->
+  <div class="panel" style="margin-bottom:16px"><div class="ph">👤 사용자 흐름도</div><div class="pb" style="overflow-x:auto">
+    <div style="min-width:780px">
+      <!-- 메인 플로우 -->
+      <div style="display:flex;align-items:center;gap:0;margin-bottom:20px;flex-wrap:nowrap">
+        <div onclick="nav('p1')" style="cursor:pointer;flex-shrink:0;text-align:center;padding:10px 14px;background:var(--al);border:1.5px solid var(--ab);border-radius:10px;min-width:90px;transition:all .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--a);font-weight:700;margin-bottom:3px">SCR-01</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">메인 홈</div>
+          <div style="font-size:9px;color:var(--t3)">배너·검색·추천</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;padding:0 6px">
+          <div style="height:1.5px;width:32px;background:var(--bd2)"></div>
+          <div style="font-size:8px;color:var(--t3);margin-top:2px">검색/클릭</div>
+        </div>
+        <div onclick="nav('p2')" style="cursor:pointer;flex-shrink:0;text-align:center;padding:10px 14px;background:var(--al);border:1.5px solid var(--ab);border-radius:10px;min-width:90px;transition:all .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--a);font-weight:700;margin-bottom:3px">SCR-02</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">검색 결과</div>
+          <div style="font-size:9px;color:var(--t3)">지도·필터·리스트</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;padding:0 6px">
+          <div style="height:1.5px;width:32px;background:var(--bd2)"></div>
+          <div style="font-size:8px;color:var(--t3);margin-top:2px">카드 클릭</div>
+        </div>
+        <div onclick="nav('p3')" style="cursor:pointer;flex-shrink:0;text-align:center;padding:10px 14px;background:var(--al);border:1.5px solid var(--ab);border-radius:10px;min-width:90px;transition:all .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--a);font-weight:700;margin-bottom:3px">SCR-03</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">여행지 상세</div>
+          <div style="font-size:9px;color:var(--t3)">템플릿·지도·리뷰</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;padding:0 6px">
+          <div style="height:1.5px;width:32px;background:var(--bd2)"></div>
+          <div style="font-size:8px;color:var(--t3);margin-top:2px">예약 클릭</div>
+        </div>
+        <!-- 분기 : 로그인 체크 -->
+        <div style="flex-shrink:0;text-align:center;padding:10px 14px;background:var(--aml);border:1.5px solid var(--amb);border-radius:10px;min-width:90px">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--am);font-weight:700;margin-bottom:3px">GUARD</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">로그인 확인</div>
+          <div style="font-size:9px;color:var(--t3)">Nav Guard</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;padding:0 6px">
+          <div style="height:1.5px;width:32px;background:var(--gb)"></div>
+          <div style="font-size:8px;color:var(--g);margin-top:2px">로그인 OK</div>
+        </div>
+        <div onclick="nav('p4')" style="cursor:pointer;flex-shrink:0;text-align:center;padding:10px 14px;background:var(--aml);border:1.5px solid var(--amb);border-radius:10px;min-width:90px;transition:all .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--am);font-weight:700;margin-bottom:3px">SCR-04</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">예약·결제</div>
+          <div style="font-size:9px;color:var(--t3)">날짜·인원·PG</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;padding:0 6px">
+          <div style="height:1.5px;width:32px;background:var(--gb)"></div>
+          <div style="font-size:8px;color:var(--g);margin-top:2px">결제 성공</div>
+        </div>
+        <div onclick="nav('p5')" style="cursor:pointer;flex-shrink:0;text-align:center;padding:10px 14px;background:var(--gl);border:1.5px solid var(--gb);border-radius:10px;min-width:90px;transition:all .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--g);font-weight:700;margin-bottom:3px">SCR-05</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">예약 완료</div>
+          <div style="font-size:9px;color:var(--t3)">이메일·Static Map</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;padding:0 6px">
+          <div style="height:1.5px;width:32px;background:var(--bd2)"></div>
+          <div style="font-size:8px;color:var(--t3);margin-top:2px">내역 보기</div>
+        </div>
+        <div onclick="nav('p6')" style="cursor:pointer;flex-shrink:0;text-align:center;padding:10px 14px;background:var(--al);border:1.5px solid var(--ab);border-radius:10px;min-width:90px;transition:all .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--a);font-weight:700;margin-bottom:3px">SCR-06</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">예약 내역</div>
+          <div style="font-size:9px;color:var(--t3)">취소·환불·리뷰</div>
+        </div>
+      </div>
+
+      <!-- 비로그인 분기 -->
+      <div style="display:flex;align-items:flex-start;gap:8px;padding:10px 14px;background:var(--rl);border:1px solid var(--rb);border-radius:9px;max-width:580px;margin-bottom:10px">
+        <div style="flex-shrink:0;margin-top:1px">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--r);font-weight:700;background:var(--w);padding:2px 7px;border-radius:4px;border:1px solid var(--rb)">비로그인</div>
+        </div>
+        <div style="font-size:11.5px;color:var(--r);line-height:1.7">Nav Guard에서 로그인 여부 확인 → 비로그인 시 로그인 모달 표시 → <strong>성공 후 <code style="color:var(--r);background:rgba(214,48,48,.1)">bookingId</code>와 함께 예약 화면으로 자동 복귀</strong></div>
+      </div>
+
+      <!-- 예약 내역 세부 플로우 -->
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--s);border:1px solid var(--bd);border-radius:9px;max-width:720px">
+        <div style="font-size:10.5px;font-weight:600;color:var(--t);white-space:nowrap">SCR-06 내부 플로우</div>
+        <div style="font-size:10px;color:var(--a)">→</div>
+        <div style="font-size:10.5px;color:var(--t2)">취소 신청 → 환불 정책 조회(<code>cancel-policy</code>) → 모달 확인 → PG 환불 + 이메일</div>
+        <div style="font-size:10px;color:var(--a);margin-left:4px">|</div>
+        <div style="font-size:10.5px;color:var(--t2)">이용완료 → 리뷰 작성 인라인 폼</div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 관리자 흐름 -->
+  <div class="panel" style="margin-bottom:16px"><div class="ph">🔧 관리자 흐름도</div><div class="pb" style="overflow-x:auto">
+    <div style="min-width:680px">
+      <div style="display:flex;align-items:center;gap:0;margin-bottom:16px;flex-wrap:nowrap">
+        <div style="flex-shrink:0;text-align:center;padding:10px 14px;background:var(--gy);border:1.5px solid var(--gyb);border-radius:10px;min-width:90px">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--t2);font-weight:700;margin-bottom:3px">AUTH</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">관리자 로그인</div>
+          <div style="font-size:9px;color:var(--t3)">ROLE_ADMIN</div>
+        </div>
+        <div style="padding:0 8px"><div style="height:1.5px;width:28px;background:var(--bd2)"></div></div>
+        <div onclick="nav('p7')" style="cursor:pointer;flex-shrink:0;text-align:center;padding:10px 14px;background:var(--aml);border:1.5px solid var(--amb);border-radius:10px;min-width:100px;transition:all .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--am);font-weight:700;margin-bottom:3px">ADM-01</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">배너 관리</div>
+          <div style="font-size:9px;color:var(--t3)">최대 10개·날짜</div>
+        </div>
+        <div style="padding:0 8px"><div style="height:1.5px;width:28px;background:var(--bd2)"></div></div>
+        <div onclick="nav('p8')" style="cursor:pointer;flex-shrink:0;text-align:center;padding:10px 14px;background:var(--aml);border:1.5px solid var(--amb);border-radius:10px;min-width:100px;transition:all .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--am);font-weight:700;margin-bottom:3px">ADM-02</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">여행지 관리</div>
+          <div style="font-size:9px;color:var(--t3)">지도핀·템플릿</div>
+        </div>
+        <div style="padding:0 8px"><div style="height:1.5px;width:28px;background:var(--bd2)"></div></div>
+        <div onclick="nav('p9')" style="cursor:pointer;flex-shrink:0;text-align:center;padding:10px 14px;background:var(--aml);border:1.5px solid var(--amb);border-radius:10px;min-width:100px;transition:all .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--am);font-weight:700;margin-bottom:3px">ADM-03</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">사용자 관리</div>
+          <div style="font-size:9px;color:var(--t3)">권한·정지·검색</div>
+        </div>
+        <div style="padding:0 8px"><div style="height:1.5px;width:28px;background:var(--bd2)"></div></div>
+        <div style="flex-shrink:0;text-align:center;padding:10px 14px;background:var(--gy);border:1.5px solid var(--gyb);border-radius:10px;min-width:100px">
+          <div style="font-size:9px;font-family:var(--mono);color:var(--t2);font-weight:700;margin-bottom:3px">STAT</div>
+          <div style="font-size:12px;font-weight:600;color:var(--t);margin-bottom:2px">통계 대시보드</div>
+          <div style="font-size:9px;color:var(--t3)">Vue Chart.js</div>
+        </div>
+      </div>
+
+      <!-- 배너 관리 세부 -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <div style="padding:9px 12px;background:var(--s);border:1px solid var(--bd);border-radius:8px">
+          <div style="font-size:10px;font-weight:700;color:var(--am);margin-bottom:5px">ADM-01 배너 관리 세부</div>
+          <div style="font-size:10.5px;color:var(--t2);line-height:1.75">
+            등록(최대 10개 제한 체크) → 이미지+날짜 입력<br>
+            → 저장 → <code>@CacheEvict</code> → 사용자 즉시 반영<br>
+            → 드래그&드롭 순서 변경 → 순서 저장<br>
+            → <code>@Scheduled</code> 매일 자정 만료 자동 처리
+          </div>
+        </div>
+        <div style="padding:9px 12px;background:var(--s);border:1px solid var(--bd);border-radius:8px">
+          <div style="font-size:10px;font-weight:700;color:var(--am);margin-bottom:5px">ADM-02 여행지 관리 세부</div>
+          <div style="font-size:10.5px;color:var(--t2);line-height:1.75">
+            기본정보 입력 → 카카오맵 지도 핀 설정<br>
+            → 이미지 업로드 → 레이아웃(10종) 선택<br>
+            → 섹션 블록(14종) 드래그&드롭 빌더<br>
+            → sections JSON 저장 → <code>@CacheEvict</code>
+          </div>
+        </div>
+        <div style="padding:9px 12px;background:var(--s);border:1px solid var(--bd);border-radius:8px">
+          <div style="font-size:10px;font-weight:700;color:var(--am);margin-bottom:5px">ADM-03 사용자 관리 세부</div>
+          <div style="font-size:10.5px;color:var(--t2);line-height:1.75">
+            SearchVO 복합 검색 → 테이블 목록<br>
+            → 권한 변경(USER↔ADMIN) → 세션 즉시 반영<br>
+            → 계정 정지(USE_YN='N') → 세션 무효화<br>
+            → 상세 모달(예약·찜·리뷰 통계) → CSV
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+
+  <!-- 핵심 기술 흐름 -->
+  <div class="panel" style="margin-bottom:16px"><div class="ph">⚡ 핵심 기술 흐름</div><div class="pb">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+
+      <!-- 예약 트랜잭션 흐름 -->
+      <div style="padding:12px 14px;background:var(--gl);border:1px solid var(--gb);border-radius:10px">
+        <div style="font-size:11px;font-weight:700;color:var(--g);margin-bottom:8px">&#9654; 예약 @Transactional 처리 흐름</div>
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(255,255,255,.7);border-radius:6px;font-size:10.5px;color:var(--t2)"><span style="width:18px;height:18px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">1</span>POST /api/reservation 호출</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(255,255,255,.7);border-radius:6px;font-size:10.5px;color:var(--t2)"><span style="width:18px;height:18px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">2</span>TB_AVAILABILITY.REMAIN_CNT-- (가용인원 차감)</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(255,255,255,.7);border-radius:6px;font-size:10.5px;color:var(--t2)"><span style="width:18px;height:18px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">3</span>TB_RESERVATION INSERT (UUID PK)</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(255,255,255,.7);border-radius:6px;font-size:10.5px;color:var(--t2)"><span style="width:18px;height:18px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">4</span>TB_PAYMENT INSERT (PG 결제 확인)</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(255,255,255,.7);border-radius:6px;font-size:10.5px;color:var(--t2)"><span style="width:18px;height:18px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">5</span>STATUS_CD = CONFIRMED 업데이트</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(255,255,255,.7);border-radius:6px;font-size:10.5px;color:var(--t2)"><span style="width:18px;height:18px;border-radius:50%;background:var(--am);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">+</span><code>@Async</code> 이메일 발송 (비동기 분리)</div>
+          <div style="padding:5px 8px;background:var(--rl);border-radius:6px;font-size:10px;color:var(--r)">⚠️ 1~5단계 중 어느 곳에서 오류가 나도 전체 롤백!</div>
+        </div>
+      </div>
+
+      <!-- 배너 캐시 흐름 -->
+      <div style="padding:12px 14px;background:var(--aml);border:1px solid var(--amb);border-radius:10px">
+        <div style="font-size:11px;font-weight:700;color:var(--am);margin-bottom:8px">&#9654; 배너 캐시 자동 반영 흐름</div>
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(255,255,255,.7);border-radius:6px;font-size:10.5px;color:var(--t2)"><span style="width:18px;height:18px;border-radius:50%;background:var(--am);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">1</span>관리자: 배너 등록/수정/삭제</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(255,255,255,.7);border-radius:6px;font-size:10.5px;color:var(--t2)"><span style="width:18px;height:18px;border-radius:50%;background:var(--am);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">2</span><code>@CacheEvict("mainContent")</code> 실행</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(255,255,255,.7);border-radius:6px;font-size:10.5px;color:var(--t2)"><span style="width:18px;height:18px;border-radius:50%;background:var(--am);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">3</span>다음 사용자 GET /api/main/content</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(255,255,255,.7);border-radius:6px;font-size:10.5px;color:var(--t2)"><span style="width:18px;height:18px;border-radius:50%;background:var(--am);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">4</span>캐시 MISS → DB에서 새 배너 조회</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(255,255,255,.7);border-radius:6px;font-size:10.5px;color:var(--t2)"><span style="width:18px;height:18px;border-radius:50%;background:var(--am);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">5</span><code>@Cacheable</code>로 캐시 재저장</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:5px 8px;background:rgba(255,255,255,.7);border-radius:6px;font-size:10.5px;color:var(--t2)"><span style="width:18px;height:18px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0">✓</span>사용자에게 새 배너 자동 표시!</div>
+          <div style="padding:5px 8px;background:rgba(201,114,20,.1);border-radius:6px;font-size:10px;color:var(--am)">&#128197; @Scheduled 매일 자정: 만료 배너 USE_YN='N' 자동 처리</div>
+        </div>
+      </div>
+
+      <!-- 카카오맵 활용 흐름 -->
+      <div style="padding:12px 14px;background:var(--al);border:1px solid var(--ab);border-radius:10px">
+        <div style="font-size:11px;font-weight:700;color:var(--a);margin-bottom:8px">&#9654; 카카오 API 활용 흐름</div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:10.5px;color:var(--t2)">
+          <div style="padding:5px 9px;background:rgba(255,255,255,.8);border-radius:6px;border-left:3px solid var(--a)"><strong>검색 결과(SCR-02)</strong>: 여행지 목록 위도·경도로 마커 생성 + MarkerClusterer</div>
+          <div style="padding:5px 9px;background:rgba(255,255,255,.8);border-radius:6px;border-left:3px solid var(--a)"><strong>여행지 상세(SCR-03)</strong>: 단일 마커 + 반경 5km 주변 여행지 마커</div>
+          <div style="padding:5px 9px;background:rgba(255,255,255,.8);border-radius:6px;border-left:3px solid var(--a)"><strong>예약 완료(SCR-05)</strong>: 미니 지도 + Static Map API(서버에서 호출) → 이메일 첨부</div>
+          <div style="padding:5px 9px;background:rgba(255,255,255,.8);border-radius:6px;border-left:3px solid var(--a)"><strong>여행지 관리(ADM-02)</strong>: 지도 핀 설정 + Geocoder 역지오코딩</div>
+          <div style="padding:5px 9px;background:var(--rl);border-radius:6px;border-left:3px solid var(--r);font-size:10px;color:var(--r)">&#128275; REST API 키는 서버 프록시(/api/map/geocode)에서만 사용 → 클라이언트 노출 방지</div>
+        </div>
+      </div>
+
+      <!-- 동적 템플릿 흐름 -->
+      <div style="padding:12px 14px;background:var(--gl);border:1px solid var(--gb);border-radius:10px">
+        <div style="font-size:11px;font-weight:700;color:var(--g);margin-bottom:8px">&#9654; 동적 템플릿 렌더링 흐름</div>
+        <div style="display:flex;flex-direction:column;gap:5px;font-size:10.5px;color:var(--t2)">
+          <div style="padding:5px 9px;background:rgba(255,255,255,.8);border-radius:6px;border-left:3px solid var(--g)">관리자: 레이아웃(10종) + 섹션 블록(14종) 선택·배치</div>
+          <div style="padding:5px 9px;background:rgba(255,255,255,.8);border-radius:6px;border-left:3px solid var(--g)"><code>[{type:"HERO_GALLERY",...}, {type:"KAKAO_MAP",...}]</code> JSON 직렬화 → TB_TRAVEL.SECTIONS_JSON에 저장</div>
+          <div style="padding:5px 9px;background:rgba(255,255,255,.8);border-radius:6px;border-left:3px solid var(--g)">사용자 접속: GET /api/travel/:id → sections JSON 응답</div>
+          <div style="padding:5px 9px;background:rgba(255,255,255,.8);border-radius:6px;border-left:3px solid var(--g)"><code>DynamicSection.vue</code>: <code>:is="sectionComponents[section.type]"</code> 동적 렌더링</div>
+          <div style="padding:5px 9px;background:rgba(255,255,255,.8);border-radius:6px;border-left:3px solid var(--g)">새 섹션 타입 추가 = <code>sectionComponents</code>에 컴포넌트만 등록, 기존 코드 수정 불필요!</div>
+        </div>
+      </div>
+
+    </div>
+  </div></div>
+
+  <!-- 범례 -->
+  <div style="display:flex;gap:12px;flex-wrap:wrap;padding:12px 16px;background:var(--s);border-radius:10px;border:1px solid var(--bd)">
+    <span style="font-size:10px;font-weight:700;color:var(--t3)">범례</span>
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t2)"><div style="width:10px;height:10px;border-radius:2px;background:var(--al);border:1.5px solid var(--ab)"></div>Vue SPA 화면</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t2)"><div style="width:10px;height:10px;border-radius:2px;background:var(--aml);border:1.5px solid var(--amb)"></div>Hybrid 화면 / Guard</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t2)"><div style="width:10px;height:10px;border-radius:2px;background:var(--gl);border:1.5px solid var(--gb)"></div>성공·완료</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t2)"><div style="width:10px;height:10px;border-radius:2px;background:var(--gy);border:1.5px solid var(--gyb)"></div>관리자 전용</div>
+    <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t2)"><div style="width:10px;height:10px;border-radius:2px;background:var(--rl);border:1.5px solid var(--rb)"></div>오류·비로그인 분기</div>
+    <span style="margin-left:auto;font-size:10.5px;color:var(--t3)">노드 클릭 → 해당 화면 상세로 이동</span>
+  </div>
+</div>
+<div class="pnav"><button class="pnbtn" onclick="goHome()">&#8962; 홈으로</button><span class="pninfo">전체 화면 흐름도</span><button class="pnbtn pr" onclick="nav('db')">DB · API &#8594;</button></div>
+</div>
+
+<!-- ═══════════════════════════════════ DB · API ═══════════════════════════════════ -->
+<div id="pg-db" class="page">
+<div class="sw">
+  <div class="sh">
+    <div class="sc-num">DB · API</div>
+    <div class="sc-tb">
+      <div class="sc-title">DB 설계 &amp; API 명세</div>
+      <div class="sc-desc">전체 테이블 9개와 REST API 13개 + 관리자 API 9개 전체 목록입니다.</div>
+    </div>
+  </div>
+  <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:13px">테이블 구성 (9개)</div>
+  <div class="dbgrid">
+    <div class="dbt"><div class="dbth"><div class="dbn">TB_MEMBER</div><div class="dbtd">회원</div></div><table><thead><tr><th>컬럼</th><th>타입</th><th>비고</th></tr></thead><tbody><tr><td><span class="cpk">MEMBER_ID</span></td><td class="ctype">BIGINT</td><td class="cnote">PK, AUTO_INCREMENT</td></tr><tr><td class="ckey">PASSWORD</td><td class="ctype">VARCHAR(200)</td><td class="cnote">BCrypt 암호화</td></tr><tr><td class="ckey">EMAIL</td><td class="ctype">VARCHAR(100)</td><td class="cnote">UNIQUE NOT NULL</td></tr><tr><td>ROLE</td><td class="ctype">VARCHAR(20)</td><td class="cnote">USER | ADMIN</td></tr><tr><td>USE_YN</td><td class="ctype">CHAR(1)</td><td class="cnote">Y: 정상, N: 정지</td></tr><tr><td>REG_DT</td><td class="ctype">DATETIME</td><td class="cnote">가입일</td></tr></tbody></table></div>
+    <div class="dbt"><div class="dbth"><div class="dbn">TB_TRAVEL</div><div class="dbtd">여행지</div></div><table><thead><tr><th>컬럼</th><th>타입</th><th>비고</th></tr></thead><tbody><tr><td><span class="cpk">TRAVEL_ID</span></td><td class="ctype">BIGINT</td><td class="cnote">PK</td></tr><tr><td>LATITUDE</td><td class="ctype">DECIMAL(10,7)</td><td class="cnote">위도 (지도 핀)</td></tr><tr><td>LONGITUDE</td><td class="ctype">DECIMAL(10,7)</td><td class="cnote">경도</td></tr><tr><td>PRICE</td><td class="ctype">INT</td><td class="cnote">기본 가격(원)</td></tr><tr><td class="ckey">LAYOUT_TYPE</td><td class="ctype">VARCHAR(30)</td><td class="cnote">레이아웃 코드 (L01~L10)</td></tr><tr><td class="ckey">SECTIONS_JSON</td><td class="ctype">LONGTEXT</td><td class="cnote">섹션 블록 JSON 배열</td></tr></tbody></table></div>
+    <div class="dbt"><div class="dbth"><div class="dbn">TB_MAIN_CONTENT</div><div class="dbtd">메인 공통 콘텐츠</div></div><table><thead><tr><th>컬럼</th><th>타입</th><th>비고</th></tr></thead><tbody><tr><td><span class="cpk">CONTENT_ID</span></td><td class="ctype">BIGINT</td><td class="cnote">PK</td></tr><tr><td class="ckey">AREA_CODE</td><td class="ctype">VARCHAR(30)</td><td class="cnote">MAIN_BANNER|THEME_TAGS|RECOMMEND</td></tr><tr><td>SORT_ORDER</td><td class="ctype">INT</td><td class="cnote">노출 순서</td></tr><tr><td>USE_YN</td><td class="ctype">CHAR(1)</td><td class="cnote">Y: 노출, N: 비활성</td></tr><tr><td>START_DT</td><td class="ctype">DATETIME</td><td class="cnote">노출 시작일</td></tr><tr><td>END_DT</td><td class="ctype">DATETIME</td><td class="cnote">종료일 (@Scheduled 자동 체크)</td></tr></tbody></table></div>
+    <div class="dbt"><div class="dbth"><div class="dbn">TB_RESERVATION</div><div class="dbtd">예약</div></div><table><thead><tr><th>컬럼</th><th>타입</th><th>비고</th></tr></thead><tbody><tr><td><span class="cpk">RESV_ID</span></td><td class="ctype">VARCHAR(36)</td><td class="cnote">UUID, PK</td></tr><tr><td>MEMBER_ID</td><td class="ctype">BIGINT</td><td class="cnote">FK → TB_MEMBER</td></tr><tr><td>TRAVEL_ID</td><td class="ctype">BIGINT</td><td class="cnote">FK → TB_TRAVEL</td></tr><tr><td>CHECKIN/CHECKOUT_DT</td><td class="ctype">DATE</td><td class="cnote">체크인/아웃</td></tr><tr><td>GUEST_CNT</td><td class="ctype">INT</td><td class="cnote">인원 수</td></tr><tr><td>STATUS_CD</td><td class="ctype">VARCHAR(20)</td><td class="cnote">PENDING|CONFIRMED|COMPLETED|CANCELLED</td></tr></tbody></table></div>
+    <div class="dbt"><div class="dbth"><div class="dbn">TB_PAYMENT</div><div class="dbtd">결제</div></div><table><thead><tr><th>컬럼</th><th>타입</th><th>비고</th></tr></thead><tbody><tr><td><span class="cpk">PAY_ID</span></td><td class="ctype">BIGINT</td><td class="cnote">PK</td></tr><tr><td>RESV_ID</td><td class="ctype">VARCHAR(36)</td><td class="cnote">FK → TB_RESERVATION</td></tr><tr><td>PG_TXN_ID</td><td class="ctype">VARCHAR(100)</td><td class="cnote">PG사 거래 ID</td></tr><tr><td>PAY_AMOUNT / REFUND_AMOUNT</td><td class="ctype">INT</td><td class="cnote">결제/환불 금액(원)</td></tr><tr><td>PAY_STATUS</td><td class="ctype">VARCHAR(20)</td><td class="cnote">PAID|REFUNDED|PARTIAL_REFUND</td></tr></tbody></table></div>
+    <div class="dbt"><div class="dbth"><div class="dbn">기타 테이블</div><div class="dbtd">관계도</div></div><table><thead><tr><th>테이블</th><th>역할</th><th>관계</th></tr></thead><tbody><tr><td>TB_TRAVEL_IMG</td><td class="cnote">여행지 이미지</td><td class="cnote">N:1 → TB_TRAVEL</td></tr><tr><td>TB_AVAILABILITY</td><td class="cnote">예약 가능 날짜</td><td class="cnote">N:1 → TB_TRAVEL</td></tr><tr><td>TB_REVIEW</td><td class="cnote">리뷰·별점</td><td class="cnote">1:1 → TB_RESERVATION (UNIQUE)</td></tr><tr><td>TB_WISHLIST</td><td class="cnote">찜 목록</td><td class="cnote">N:1 → MEMBER, TRAVEL (복합 UNIQUE)</td></tr></tbody></table></div>
+  </div>
+  <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px">REST API 전체 목록</div>
+  <div class="apifl">
+    <div class="dlbl">사용자 API</div>
+    <div class="afr"><span class="method mget">GET</span><div class="aurl">/api/main/content</div><div class="adesc">메인 배너·추천·태그 (@Cacheable, areaCode 파라미터)</div><span class="aauth apub">공개</span></div>
+    <div class="afr"><span class="method mget">GET</span><div class="aurl">/api/travel/search</div><div class="adesc">여행지 검색 (위경도·필터·페이지 포함)</div><span class="aauth apub">공개</span></div>
+    <div class="afr"><span class="method mget">GET</span><div class="aurl">/api/travel/:id</div><div class="adesc">여행지 상세 + sections JSON</div><span class="aauth apub">공개</span></div>
+    <div class="afr"><span class="method mget">GET</span><div class="aurl">/api/travel/suggest</div><div class="adesc">검색 자동완성 5건</div><span class="aauth apub">공개</span></div>
+    <div class="afr"><span class="method mget">GET</span><div class="aurl">/api/travel/nearby</div><div class="adesc">반경 내 주변 여행지 (Haversine 공식)</div><span class="aauth apub">공개</span></div>
+    <div class="afr"><span class="method mget">GET</span><div class="aurl">/api/travel/:id/availability</div><div class="adesc">예약 가능 날짜 목록</div><span class="aauth apub">공개</span></div>
+    <div class="afr"><span class="method mpost">POST</span><div class="aurl">/api/reservation</div><div class="adesc">예약 생성 + PG 결제 (@Transactional: 인원차감·INSERT·PG·UUID·CONFIRMED)</div><span class="aauth areq">인증</span></div>
+    <div class="afr"><span class="method mget">GET</span><div class="aurl">/api/my/reservations</div><div class="adesc">내 예약 목록 (위경도 포함)</div><span class="aauth areq">인증</span></div>
+    <div class="afr"><span class="method mget">GET</span><div class="aurl">/api/reservation/:id/cancel-policy</div><div class="adesc">취소 환불 금액 계산</div><span class="aauth areq">인증</span></div>
+    <div class="afr"><span class="method mpatch">PATCH</span><div class="aurl">/api/reservation/:id/cancel</div><div class="adesc">예약 취소 + PG 환불 + 이메일 (@Async)</div><span class="aauth areq">인증</span></div>
+    <div class="afr"><span class="method mpost">POST</span><div class="aurl">/api/review</div><div class="adesc">리뷰 작성 (평균 별점 자동 갱신, 예약당 1건 UNIQUE)</div><span class="aauth areq">인증</span></div>
+    <div class="afr"><span class="method mpost">POST</span><div class="aurl">/api/wishlist/:id</div><div class="adesc">찜 토글 (낙관적 업데이트)</div><span class="aauth areq">인증</span></div>
+    <div class="afr"><span class="method mget">GET</span><div class="aurl">/api/map/geocode</div><div class="adesc">주소→위경도 서버 프록시 (카카오 API 키 보안)</div><span class="aauth apub">공개</span></div>
+    <div class="dlbl">관리자 API (ROLE_ADMIN 전용)</div>
+    <div class="afr"><span class="method mpost">POST</span><div class="aurl">/admin/main-content</div><div class="adesc">메인 콘텐츠 등록 (@CacheEvict, 최대 10개 제한)</div><span class="aauth aadm">ADMIN</span></div>
+    <div class="afr"><span class="method mpatch">PATCH</span><div class="aurl">/admin/main-content/:id</div><div class="adesc">배너 수정</div><span class="aauth aadm">ADMIN</span></div>
+    <div class="afr"><span class="method mpatch">PATCH</span><div class="aurl">/admin/main-content/reorder</div><div class="adesc">배너 순서 일괄 변경 (SORT_ORDER 업데이트)</div><span class="aauth aadm">ADMIN</span></div>
+    <div class="afr"><span class="method mdel">DELETE</span><div class="aurl">/admin/main-content/:id</div><div class="adesc">배너 삭제</div><span class="aauth aadm">ADMIN</span></div>
+    <div class="afr"><span class="method mpatch">PATCH</span><div class="aurl">/admin/travel/:id/sections</div><div class="adesc">여행지 섹션 JSON 업데이트 (@CacheEvict)</div><span class="aauth aadm">ADMIN</span></div>
+    <div class="afr"><span class="method mget">GET</span><div class="aurl">/admin/members</div><div class="adesc">회원 목록 (SearchVO: 이름/이메일/권한/상태/가입일 복합 검색)</div><span class="aauth aadm">ADMIN</span></div>
+    <div class="afr"><span class="method mget">GET</span><div class="aurl">/admin/members/:id</div><div class="adesc">회원 상세 + 예약/찜/리뷰 통계</div><span class="aauth aadm">ADMIN</span></div>
+    <div class="afr"><span class="method mpatch">PATCH</span><div class="aurl">/admin/members/:id/role</div><div class="adesc">권한 변경 USER↔ADMIN (즉시 세션 반영)</div><span class="aauth aadm">ADMIN</span></div>
+    <div class="afr"><span class="method mpatch">PATCH</span><div class="aurl">/admin/members/:id/status</div><div class="adesc">계정 정지/활성화 (USE_YN 변경 + 세션 무효화)</div><span class="aauth aadm">ADMIN</span></div>
+    <div class="afr"><span class="method mpost">POST</span><div class="aurl">/admin/members/batch</div><div class="adesc">회원 일괄 상태 변경</div><span class="aauth aadm">ADMIN</span></div>
+  </div>
+</div>
+<div class="pnav"><button class="pnbtn" onclick="nav('p9')">&#8592; 09 사용자 관리</button><span class="pninfo">DB · API</span><button class="pnbtn pr" onclick="goHome()">&#8962; 홈으로</button></div>
+</div>
+
+<script>
+const TITLES = {
+  home:'여행 웹페이지 스토리보드',
+  p1:'SCR-01 — 메인 홈',p2:'SCR-02 — 검색 결과',p3:'SCR-03 — 여행지 상세',
+  p4:'SCR-04 — 예약·결제',p5:'SCR-05 — 예약 완료',p6:'SCR-06 — 예약 내역',
+  p7:'ADM-01 — 배너 관리',p8:'ADM-02 — 여행지 관리',p9:'ADM-03 — 사용자 관리',
+  flow:'전체 화면 흐름도', db:'DB · API 명세'
+};
+const BADGES = {
+  home:'v2.0',p1:'SCR-01',p2:'SCR-02',p3:'SCR-03',p4:'SCR-04',
+  p5:'SCR-05',p6:'SCR-06',p7:'ADM-01',p8:'ADM-02',p9:'ADM-03',
+  flow:'FLOW',db:'DB'
+};
+
+let stack = [];
+let current = 'home';
+
+const NAV_GROUP = {
+  home:'nb-home',
+  p1:'nb-user',p2:'nb-user',p3:'nb-user',p4:'nb-user',p5:'nb-user',p6:'nb-user',
+  p7:'nb-adm',p8:'nb-adm',p9:'nb-adm',
+  flow:'nb-flow',db:'nb-db'
+};
+
+function updateTopbar(id) {
+  const isHome = id === 'home';
+  document.getElementById('btn-back').classList.toggle('hide', isHome);
+  document.getElementById('btn-home').classList.toggle('hide', isHome);
+  document.getElementById('tb-badge').textContent = BADGES[id] || '';
+  document.title = TITLES[id] || '스토리보드';
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('cur'));
+  const gid = NAV_GROUP[id];
+  if (gid) { const el = document.getElementById(gid); if(el) el.classList.add('cur'); }
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  const el = document.getElementById('pg-' + id);
+  if (el) { el.classList.add('on'); window.scrollTo({top:0,behavior:'instant'}); }
+  current = id;
+  updateTopbar(id);
+  document.title = TITLES[id] || '스토리보드';
+}
+
+function nav(id) {
+  if (current !== id) stack.push(current);
+  showPage(id);
+}
+
+function goBack() {
+  if (stack.length > 0) {
+    showPage(stack.pop());
+  } else {
+    goHome();
+  }
+}
+
+function goHome() {
+  stack = [];
+  showPage('home');
+}
+
+updateTopbar('home');
+</script>
+</body>
+</html>

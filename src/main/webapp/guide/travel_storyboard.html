@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>여행 웹페이지 — 상세 스토리보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #f7f8fa;
+  --bg2:      #f0f1f5;
+  --white:    #ffffff;
+  --border:   #e4e6ed;
+  --border2:  #d0d3de;
+  --text:     #1a1d27;
+  --text2:    #5a5f72;
+  --text3:    #9499ae;
+  --accent:   #3b6ff0;
+  --accent-l: #eef2fd;
+  --accent-b: #c5d3fa;
+  --green:    #1aab6d;
+  --green-l:  #e8f8f1;
+  --green-b:  #a3e0c6;
+  --amber:    #e07b1a;
+  --amber-l:  #fdf3e6;
+  --amber-b:  #f5cc8e;
+  --red:      #e03535;
+  --red-l:    #fdeaea;
+  --red-b:    #f5a3a3;
+  --gray-l:   #f2f3f7;
+  --gray-b:   #c8cbd8;
+  --font:     'DM Sans', 'Noto Sans KR', sans-serif;
+  --mono:     'JetBrains Mono', monospace;
+  --radius:   10px;
+  --radius-lg:14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── TOPNAV ── */
+.topnav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 28px; height: 50px;
+  gap: 4px;
+}
+.nav-brand {
+  font-size: 13px; font-weight: 600; color: var(--text);
+  letter-spacing: -.2px; margin-right: 20px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 7px;
+}
+.nav-brand-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent);
+}
+.navs { display: flex; gap: 1px; overflow-x: auto; scrollbar-width: none; flex: 1; }
+.navs::-webkit-scrollbar { display: none; }
+.navbtn {
+  padding: 0 13px; height: 50px;
+  display: flex; align-items: center; gap: 5px;
+  cursor: pointer; white-space: nowrap; border: none;
+  background: transparent; font-family: var(--font);
+  font-size: 12.5px; font-weight: 400; color: var(--text3);
+  border-bottom: 2px solid transparent;
+  transition: color .15s;
+}
+.navbtn:hover { color: var(--text2); }
+.navbtn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+.nbadge {
+  font-size: 10px; font-weight: 600; font-family: var(--mono);
+  background: var(--bg2); color: var(--text3);
+  padding: 2px 5px; border-radius: 4px;
+}
+.navbtn.active .nbadge { background: var(--accent-l); color: var(--accent); }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── HERO ── */
+.hero {
+  max-width: 1200px; margin: 0 auto;
+  padding: 88px 32px 48px;
+  display: grid; grid-template-columns: 1fr 360px; gap: 48px; align-items: start;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent-l); border: 1px solid var(--accent-b);
+  border-radius: 20px; padding: 4px 11px;
+  font-size: 11px; font-weight: 500; color: var(--accent);
+  margin-bottom: 18px;
+}
+.hero-title {
+  font-size: 44px; font-weight: 600; line-height: 1.1;
+  letter-spacing: -.8px; color: var(--text);
+  margin-bottom: 6px;
+}
+.hero-title span { color: var(--accent); }
+.hero-sub { font-size: 15px; color: var(--text2); margin-bottom: 20px; font-weight: 400; line-height: 1.7; }
+.hero-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  padding: 4px 11px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--white);
+  font-size: 11px; font-family: var(--mono); color: var(--text2);
+}
+
+.stack-card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.stack-head {
+  padding: 14px 18px 10px;
+  font-size: 10px; font-weight: 600; color: var(--text3);
+  letter-spacing: .08em; text-transform: uppercase; border-bottom: 1px solid var(--border);
+}
+.stack-row {
+  display: flex; align-items: center; padding: 9px 18px;
+  border-bottom: 1px solid var(--bg2); font-size: 13px;
+}
+.stack-row:last-child { border-bottom: none; }
+.stack-name { flex: 1; font-weight: 500; }
+.stack-ver { font-size: 11px; font-family: var(--mono); color: var(--text3); margin-right: 8px; }
+.stack-port {
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
+  padding: 2px 7px; border-radius: 4px; background: var(--bg2); color: var(--text2);
+}
+
+/* ── FLOW ── */
+.flow-wrap {
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 32px 52px;
+}
+.sec-label {
+  font-size: 10px; font-weight: 600; color: var(--text3);
+  letter-spacing: .1em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 18px;
+}
+.sec-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.flow-box {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 28px 28px 20px;
+  overflow-x: auto;
+}
+.flow-row { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; margin-bottom: 12px; min-width: max-content; }
+.flow-row:last-child { margin-bottom: 0; }
+.fn {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 8px 14px; border-radius: 8px;
+  font-size: 11.5px; font-weight: 500; min-width: 96px; text-align: center;
+  line-height: 1.4; cursor: pointer;
+}
+.fn sub { font-size: 9.5px; font-weight: 400; opacity: .8; }
+.fn-blue { background: var(--accent-l); border: 1px solid var(--accent-b); color: var(--accent); }
+.fn-amber { background: var(--amber-l); border: 1px solid var(--amber-b); color: var(--amber); }
+.fn-green { background: var(--green-l); border: 1px solid var(--green-b); color: var(--green); }
+.fn-red { background: var(--red-l); border: 1px solid var(--red-b); color: var(--red); }
+.fn-gray { background: var(--gray-l); border: 1px solid var(--gray-b); color: var(--text2); }
+.farrow { color: var(--text3); font-size: 13px; flex-shrink: 0; }
+.flow-legend {
+  display: flex; gap: 18px; margin-top: 18px;
+  padding-top: 16px; border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.lg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text3); }
+.lg-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+/* ── SCREEN PAGE ── */
+.scrwrap {
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 32px 72px;
+}
+.scrhead {
+  display: flex; align-items: flex-start; gap: 16px;
+  margin-bottom: 24px; padding-top: 12px; flex-wrap: wrap;
+}
+.scr-num {
+  font-size: 11px; font-weight: 600; font-family: var(--mono);
+  background: var(--bg2); border: 1px solid var(--border2);
+  color: var(--text3); padding: 3px 9px; border-radius: 5px;
+  flex-shrink: 0; margin-top: 5px;
+}
+.scr-title-blk { flex: 1; }
+.scr-title {
+  font-size: 30px; font-weight: 600; letter-spacing: -.5px;
+  color: var(--text); margin-bottom: 5px;
+}
+.scr-desc { font-size: 13px; color: var(--text2); line-height: 1.7; max-width: 560px; }
+.render-pill {
+  padding: 4px 12px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 6px;
+}
+.rp-hybrid { background: var(--amber-l); color: var(--amber); border: 1px solid var(--amber-b); }
+.rp-vue    { background: var(--green-l); color: var(--green); border: 1px solid var(--green-b); }
+.rp-egov   { background: var(--gray-l);  color: var(--text2); border: 1px solid var(--gray-b); }
+.rp-done   { background: var(--accent-l);color: var(--accent);border: 1px solid var(--accent-b); }
+
+/* ── 3 COL ── */
+.tcol {
+  display: grid;
+  grid-template-columns: 272px 1fr 292px;
+  gap: 14px;
+}
+@media(max-width:1080px) { .tcol { grid-template-columns: 1fr; } }
+
+.panel {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.panel-head {
+  padding: 10px 16px; background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  font-size: 10.5px; font-weight: 600; color: var(--text3);
+  letter-spacing: .08em; text-transform: uppercase;
+}
+.panel-body { padding: 16px; }
+
+/* ── WIREFRAME ── */
+.wfbrowser {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 9px; overflow: hidden;
+}
+.wfchrome {
+  background: var(--bg); padding: 7px 10px;
+  display: flex; align-items: center; gap: 5px;
+  border-bottom: 1px solid var(--border);
+}
+.wfdots { display: flex; gap: 4px; }
+.wfdot { width: 7px; height: 7px; border-radius: 50%; }
+.wfurl {
+  flex: 1; background: var(--white); border-radius: 4px;
+  padding: 3px 9px; font-family: var(--mono); font-size: 9.5px;
+  color: var(--text3); border: 1px solid var(--border); margin-left: 6px;
+}
+.wfbody { padding: 11px; }
+
+.wfnav {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 8px; background: var(--white);
+  border-radius: 6px; border: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.wflogo { width: 34px; height: 6px; border-radius: 3px; background: var(--accent); opacity: .5; }
+.wfsp { flex: 1; }
+.wfbtnsmall {
+  padding: 3px 8px; border-radius: 4px; font-size: 9px; font-weight: 600;
+  background: var(--accent-l); color: var(--accent); border: 1px solid var(--accent-b);
+}
+
+.wfbanner {
+  height: 52px; border-radius: 7px;
+  background: linear-gradient(135deg, var(--accent-l) 0%, var(--green-l) 100%);
+  border: 1px solid var(--border); margin-bottom: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--text3);
+}
+.wfsearch {
+  display: flex; gap: 4px; margin-bottom: 7px;
+}
+.wfinput {
+  flex: 1; height: 24px; border-radius: 5px;
+  background: var(--white); border: 1px solid var(--border2);
+  padding: 0 9px; font-size: 9.5px; color: var(--text3); font-family: var(--font);
+}
+.wfsearch-btn {
+  width: 34px; height: 24px; border-radius: 5px;
+  background: var(--accent); display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.wftags { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
+.wftag {
+  padding: 3px 9px; border-radius: 10px; font-size: 9px; font-weight: 600;
+  background: var(--white); color: var(--text3); border: 1px solid var(--border);
+}
+.wftag.on { background: var(--accent-l); color: var(--accent); border-color: var(--accent-b); }
+
+.wfgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+.wfcard {
+  background: var(--white); border-radius: 7px;
+  border: 1px solid var(--border); overflow: hidden;
+}
+.wfcardimg { height: 36px; }
+.wfcardimg.c1 { background: linear-gradient(135deg,var(--accent-l),#dceaff); }
+.wfcardimg.c2 { background: linear-gradient(135deg,var(--green-l),#ccf3e3); }
+.wfcardimg.c3 { background: linear-gradient(135deg,var(--amber-l),#fde8c2); }
+.wfcardimg.c4 { background: linear-gradient(135deg,var(--red-l),#fde0e0); }
+.wfcardinfo { padding: 6px 7px; }
+.wfbar { height: 5px; border-radius: 3px; background: var(--bg2); margin-bottom: 3px; }
+.wfbar.w8 { width: 80%; } .wfbar.w6 { width: 60%; } .wfbar.w4 { width: 40%; }
+
+.wfmap {
+  height: 68px; border-radius: 7px; margin-bottom: 7px;
+  background: linear-gradient(135deg,var(--accent-l) 0%,var(--green-l) 100%);
+  border: 1px solid var(--border); position: relative;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--text3);
+}
+.wfpin {
+  position: absolute; width: 9px; height: 9px;
+  border-radius: 50%; background: var(--red);
+  box-shadow: 0 0 0 3px rgba(224,53,53,.15);
+}
+.wflist { display: flex; flex-direction: column; gap: 5px; }
+.wflistitem {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 8px; background: var(--white);
+  border-radius: 7px; border: 1px solid var(--border);
+}
+.wfthumb {
+  width: 28px; height: 28px; border-radius: 5px; flex-shrink: 0;
+  background: var(--accent-l);
+}
+.wfthumb.t2 { background: var(--green-l); }
+.wfiteminfo { flex: 1; }
+.wfprice {
+  font-size: 10px; font-weight: 700; font-family: var(--mono);
+  color: var(--green); padding: 2px 6px; border-radius: 4px;
+  background: var(--green-l); border: 1px solid var(--green-b);
+}
+
+.wfgallmain {
+  height: 55px; border-radius: 7px; margin-bottom: 4px;
+  background: linear-gradient(135deg,var(--accent-l),var(--green-l));
+  border: 1px solid var(--border);
+}
+.wfgallthumbs { display: flex; gap: 3px; margin-bottom: 7px; }
+.wfgallthumb {
+  flex: 1; height: 15px; border-radius: 3px;
+  background: var(--bg2); border: 1px solid var(--border);
+}
+.wfgallthumb.on { background: var(--accent-l); border-color: var(--accent-b); }
+
+.wftabrow { display: flex; gap: 3px; margin-bottom: 7px; }
+.wftab {
+  flex: 1; padding: 4px; text-align: center; border-radius: 5px;
+  font-size: 9px; font-weight: 600; background: var(--bg2);
+  color: var(--text3); border: 1px solid var(--border);
+}
+.wftab.on { background: var(--accent-l); color: var(--accent); border-color: var(--accent-b); }
+
+.wfph {
+  border: 1px dashed var(--border2); border-radius: 6px;
+  padding: 9px; text-align: center; font-size: 9px;
+  color: var(--text3); margin-bottom: 7px; line-height: 1.6;
+}
+.wfcta {
+  height: 28px; border-radius: 7px; width: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  background: var(--green); color: #fff;
+}
+.wfcta.blue { background: var(--accent); }
+
+.wffieldrow { margin-bottom: 5px; }
+.wfflabel { font-size: 9px; color: var(--text3); margin-bottom: 2px; }
+.wfffield {
+  width: 100%; height: 24px; border-radius: 5px;
+  background: var(--white); border: 1px solid var(--border2);
+}
+.wfffield.err { border-color: var(--red-b); background: var(--red-l); }
+
+.wfcounter {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 5px 8px; background: var(--white); border-radius: 6px;
+  border: 1px solid var(--border); margin-bottom: 5px;
+}
+.wfcbtn {
+  width: 18px; height: 18px; border-radius: 4px; background: var(--bg2);
+  border: 1px solid var(--border2); display: flex; align-items: center;
+  justify-content: center; font-size: 12px; color: var(--text2); font-weight: 600;
+}
+.wftotal {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 7px 9px; border-radius: 6px; margin-bottom: 6px;
+  background: var(--green-l); border: 1px solid var(--green-b);
+}
+.wfsuccessicon {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--green-l); border: 2px solid var(--green-b);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin: 0 auto 7px;
+}
+.wfresid {
+  font-family: var(--mono); font-size: 10px; color: var(--text3);
+  text-align: center; margin-bottom: 7px;
+}
+.wfinfobox {
+  background: var(--bg2); border-radius: 7px; padding: 9px;
+  margin-bottom: 7px; display: flex; flex-direction: column; gap: 3px;
+}
+.wfinforow { display: flex; justify-content: space-between; font-size: 10px; }
+.wfinfokey { color: var(--text3); }
+.wfinfoval { font-weight: 600; color: var(--text); }
+
+.wfstabs { display: flex; gap: 3px; margin-bottom: 7px; }
+.wfstab {
+  flex: 1; padding: 4px 5px; border-radius: 5px; text-align: center;
+  font-size: 9px; font-weight: 600; background: var(--bg2);
+  color: var(--text3); border: 1px solid var(--border);
+}
+.wfstab.on { background: var(--green-l); color: var(--green); border-color: var(--green-b); }
+
+.wfrcard {
+  padding: 8px; background: var(--white); border-radius: 7px;
+  border: 1px solid var(--border); margin-bottom: 5px;
+}
+.wfrhead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.wfrname { font-size: 11px; font-weight: 600; }
+.wfbadge { font-size: 9px; padding: 2px 7px; border-radius: 4px; font-weight: 600; }
+.bk { background: var(--green-l); color: var(--green); }
+.bd { background: var(--bg2); color: var(--text3); }
+.bc { background: var(--red-l); color: var(--red); }
+
+.wfadmin { display: flex; gap: 6px; }
+.wfsidebar {
+  width: 34px; background: var(--bg); border-radius: 7px;
+  padding: 6px 4px; display: flex; flex-direction: column; gap: 3px;
+  border: 1px solid var(--border); flex-shrink: 0;
+}
+.wfsitem {
+  height: 22px; border-radius: 4px; background: var(--bg2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; color: var(--text3);
+}
+.wfsitem.on { background: var(--accent-l); color: var(--accent); }
+.wfmain { flex: 1; }
+.wfstatgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 6px; }
+.wfstat { padding: 6px; border-radius: 6px; background: var(--bg); border: 1px solid var(--border); }
+.wfstatval { font-family: var(--mono); font-size: 13px; font-weight: 700; }
+.wfstatlbl { font-size: 8px; color: var(--text3); }
+.wfchart {
+  height: 40px; background: var(--bg); border-radius: 6px;
+  margin-bottom: 5px; display: flex; align-items: flex-end;
+  padding: 5px 7px; gap: 3px; border: 1px solid var(--border);
+}
+.wfchartbar { flex: 1; border-radius: 2px 2px 0 0; background: var(--accent); opacity: .35; }
+
+/* ── STEPS ── */
+.steps { display: flex; flex-direction: column; }
+.step { display: flex; gap: 11px; padding-bottom: 16px; position: relative; }
+.step:not(:last-child)::before {
+  content: ''; position: absolute; left: 12px; top: 28px;
+  width: 1px; height: calc(100% - 12px); background: var(--border2);
+}
+.stepnum {
+  width: 24px; height: 24px; border-radius: 50%;
+  border: 1.5px solid var(--accent-b); background: var(--accent-l);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10.5px; font-weight: 600; font-family: var(--mono);
+  color: var(--accent); flex-shrink: 0; z-index: 1; margin-top: 1px;
+}
+.stepbody { flex: 1; padding-top: 2px; }
+.steptitle { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.stepdesc { font-size: 12px; color: var(--text2); line-height: 1.7; }
+.steptags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.stag {
+  font-size: 10px; padding: 2px 8px; border-radius: 4px;
+  font-family: var(--mono); font-weight: 500;
+}
+.st-blue  { background: var(--accent-l); color: var(--accent); border: 1px solid var(--accent-b); }
+.st-green { background: var(--green-l); color: var(--green); border: 1px solid var(--green-b); }
+.st-amber { background: var(--amber-l); color: var(--amber); border: 1px solid var(--amber-b); }
+.st-gray  { background: var(--bg2); color: var(--text3); border: 1px solid var(--border2); }
+
+/* ── RIGHT PANEL ── */
+.rplab {
+  font-size: 10px; font-weight: 600; color: var(--text3);
+  letter-spacing: .08em; text-transform: uppercase; margin-bottom: 7px;
+}
+.rpsec { margin-bottom: 14px; }
+.complist { display: flex; flex-direction: column; gap: 4px; }
+.compitem {
+  display: flex; align-items: flex-start; gap: 8px; padding: 7px 10px;
+  background: var(--bg); border-radius: 7px; border: 1px solid var(--border);
+}
+.compdot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 5px; }
+.compname { font-family: var(--mono); font-size: 11px; color: var(--text); margin-bottom: 1px; }
+.compdesc { font-size: 11px; color: var(--text3); }
+.apilist { display: flex; flex-direction: column; gap: 4px; }
+.apirow {
+  display: flex; align-items: center; gap: 7px; padding: 6px 9px;
+  background: var(--bg); border-radius: 7px; border: 1px solid var(--border);
+}
+.method {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 4px; flex-shrink: 0;
+}
+.mget   { background: var(--green-l); color: var(--green); }
+.mpost  { background: var(--accent-l); color: var(--accent); }
+.mpatch { background: var(--amber-l); color: var(--amber); }
+.mdel   { background: var(--red-l); color: var(--red); }
+.apiurl { font-family: var(--mono); font-size: 11px; color: var(--text); flex: 1; }
+.apinote { font-size: 10px; color: var(--text3); }
+
+.tipbox {
+  padding: 11px 13px; border-radius: 9px;
+  background: var(--green-l); border: 1px solid var(--green-b);
+}
+.tiptitle { font-size: 11px; font-weight: 600; color: var(--green); margin-bottom: 4px; }
+.tipbody { font-size: 11px; color: #16855a; line-height: 1.6; }
+
+.warnbox {
+  padding: 11px 13px; border-radius: 9px; margin-top: 8px;
+  background: var(--amber-l); border: 1px solid var(--amber-b);
+}
+.warntitle { font-size: 11px; font-weight: 600; color: var(--amber); margin-bottom: 4px; }
+.warnbody { font-size: 11px; color: #b35f0e; line-height: 1.6; }
+
+/* ── PAGE NAV ── */
+.pagenav {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 32px; max-width: 1200px; margin: 0 auto;
+  border-top: 1px solid var(--border);
+}
+.pnavbtn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 9px 18px; border-radius: 9px;
+  background: var(--white); border: 1px solid var(--border);
+  color: var(--text2); font-size: 12.5px; font-weight: 500;
+  cursor: pointer; transition: all .15s; font-family: var(--font);
+}
+.pnavbtn:hover { background: var(--bg2); color: var(--text); }
+.pnavbtn.pr { background: var(--accent); color: #fff; border-color: var(--accent); }
+.pnavbtn.pr:hover { background: #2d5fd8; }
+.pnavbtn:disabled { opacity: .3; cursor: not-allowed; pointer-events: none; }
+.pnavinfo { font-size: 11.5px; color: var(--text3); }
+
+/* ── DB PAGE ── */
+.dbgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+@media(max-width:860px) { .dbgrid { grid-template-columns: 1fr; } }
+.dbtable {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); overflow: hidden;
+}
+.dbthead {
+  padding: 11px 16px; background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 9px;
+}
+.dbtname { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--accent); }
+.dbtdesc { font-size: 11px; color: var(--text3); }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+table th {
+  text-align: left; font-size: 10px; font-weight: 600; color: var(--text3);
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: 7px 14px; border-bottom: 1px solid var(--border); background: var(--bg);
+}
+table td { padding: 7px 14px; border-bottom: 1px solid var(--bg2); }
+table tr:last-child td { border-bottom: none; }
+table tr:hover td { background: var(--bg); }
+.cpk { font-family: var(--mono); color: var(--amber); font-size: 11px; }
+.ctype { font-family: var(--mono); font-size: 11px; color: var(--text3); }
+.cnote { font-size: 11px; color: var(--text3); }
+.ckey { font-family: var(--mono); font-size: 11px; font-weight: 600; }
+
+.apifulllist { display: flex; flex-direction: column; gap: 5px; }
+.apifullrow {
+  display: flex; align-items: flex-start; gap: 10px; padding: 9px 13px;
+  background: var(--white); border: 1px solid var(--border); border-radius: 9px;
+}
+.apifullurl { font-family: var(--mono); font-size: 12px; color: var(--text); flex: 1; }
+.apifulldesc { font-size: 12px; color: var(--text2); flex: 1; }
+.apiauth { font-size: 10px; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+.areq   { background: var(--green-l); color: var(--green); border: 1px solid var(--green-b); }
+.aadmin { background: var(--amber-l); color: var(--amber); border: 1px solid var(--amber-b); }
+.anone  { background: var(--bg2); color: var(--text3); }
+
+.divlabel {
+  font-size: 10px; font-weight: 600; color: var(--text3);
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 10px 0 7px; border-top: 1px solid var(--border); margin-top: 10px; margin-bottom: 7px;
+}
+
+code {
+  font-family: var(--mono); font-size: 11px;
+  background: var(--bg2); padding: 1px 5px;
+  border-radius: 3px; color: var(--accent); border: 1px solid var(--border2);
+}
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="topnav">
+  <div class="nav-brand"><div class="nav-brand-dot"></div>여행 스토리보드</div>
+  <div class="navs">
+    <button class="navbtn active" onclick="go('home')"><span class="nbadge">✦</span>개요</button>
+    <button class="navbtn" onclick="go('p1')"><span class="nbadge">01</span>메인 홈</button>
+    <button class="navbtn" onclick="go('p2')"><span class="nbadge">02</span>검색 결과</button>
+    <button class="navbtn" onclick="go('p3')"><span class="nbadge">03</span>여행지 상세</button>
+    <button class="navbtn" onclick="go('p4')"><span class="nbadge">04</span>예약·결제</button>
+    <button class="navbtn" onclick="go('p5')"><span class="nbadge">05</span>예약 완료</button>
+    <button class="navbtn" onclick="go('p6')"><span class="nbadge">06</span>마이페이지</button>
+    <button class="navbtn" onclick="go('p7')"><span class="nbadge">07</span>예약 내역</button>
+    <button class="navbtn" onclick="go('p8')"><span class="nbadge">08</span>관리자</button>
+    <button class="navbtn" onclick="go('db')"><span class="nbadge">DB</span>DB · API</button>
+  </div>
+</nav>
+
+<!-- ═══════ HOME ═══════ -->
+<div id="page-home" class="page active">
+<div class="hero">
+  <div>
+    <div class="hero-eyebrow">신규 개발자 학습용 스토리보드</div>
+    <div class="hero-title">여행 웹페이지<br><span>상세 스토리보드</span></div>
+    <div class="hero-sub">화면별 와이어프레임 · 사용자 시나리오 · Vue 컴포넌트 · API 연결 정보. 상단 탭 또는 흐름도 노드를 클릭해 각 화면 상세를 확인하세요.</div>
+    <div class="hero-chips">
+      <span class="chip">eGovFrame 5.0</span><span class="chip">Tomcat 10.1</span>
+      <span class="chip">Vue 3 + Vite</span><span class="chip">MySQL 8.0</span>
+      <span class="chip">Kakao Maps v3</span><span class="chip">Git + GitHub</span>
+    </div>
+  </div>
+  <div class="stack-card">
+    <div class="stack-head">기술 스택</div>
+    <div class="stack-row"><span class="stack-name">Java JDK</span><span class="stack-ver">17 LTS</span></div>
+    <div class="stack-row"><span class="stack-name">Apache Tomcat</span><span class="stack-ver">10.1</span><span class="stack-port" style="color:var(--amber)">8080</span></div>
+    <div class="stack-row"><span class="stack-name">Node.js + Vue 3</span><span class="stack-ver">20 LTS / 3.4</span><span class="stack-port" style="color:var(--green)">5173</span></div>
+    <div class="stack-row"><span class="stack-name">MySQL</span><span class="stack-ver">8.0</span><span class="stack-port" style="color:var(--accent)">3306</span></div>
+    <div class="stack-row"><span class="stack-name">DBeaver</span><span class="stack-ver">Community</span></div>
+    <div class="stack-row"><span class="stack-name">Kakao Maps</span><span class="stack-ver">v3</span></div>
+    <div class="stack-row"><span class="stack-name">Pinia</span><span class="stack-ver">상태 관리</span></div>
+    <div class="stack-row"><span class="stack-name">VeeValidate + Yup</span><span class="stack-ver">폼 검증</span></div>
+  </div>
+</div>
+
+<div class="flow-wrap">
+  <div class="sec-label">전체 화면 흐름도</div>
+  <div class="flow-box">
+    <div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px">사용자 흐름</div>
+    <div class="flow-row">
+      <div class="fn fn-blue" onclick="go('p1')">메인 홈<br><sub>배너·검색·추천</sub></div><div class="farrow">→</div>
+      <div class="fn fn-blue" onclick="go('p2')">검색 결과<br><sub>지도·리스트·필터</sub></div><div class="farrow">→</div>
+      <div class="fn fn-blue" onclick="go('p3')">여행지 상세<br><sub>템플릿·지도·리뷰</sub></div><div class="farrow">→</div>
+      <div class="fn fn-amber" onclick="go('p4')">로그인 확인<br><sub>Nav Guard</sub></div><div class="farrow">→</div>
+      <div class="fn fn-amber" onclick="go('p4')">예약·결제<br><sub>날짜·인원·PG</sub></div><div class="farrow">→</div>
+      <div class="fn fn-green" onclick="go('p5')">예약 완료<br><sub>이메일·Static Map</sub></div><div class="farrow">→</div>
+      <div class="fn fn-blue" onclick="go('p6')">마이페이지<br><sub>예약·찜·리뷰</sub></div>
+    </div>
+    <div style="padding-left:32px;margin-bottom:12px">
+      <div class="flow-row" style="margin-bottom:5px">
+        <div style="font-size:10px;color:var(--text3);margin-right:8px">↳ 비로그인</div>
+        <div class="fn fn-red" style="font-size:11px;padding:6px 12px">로그인 / 회원가입</div>
+        <div class="farrow" style="font-size:11px">→ 성공 후 복귀</div>
+      </div>
+      <div class="flow-row">
+        <div style="font-size:10px;color:var(--text3);margin-right:8px">↳ 서브 메뉴</div>
+        <div class="fn fn-blue" onclick="go('p7')" style="font-size:11px;padding:6px 12px;min-width:80px">예약 내역</div>
+        <div class="farrow">|</div>
+        <div class="fn fn-blue" style="font-size:11px;padding:6px 12px;min-width:80px">찜 목록</div>
+        <div class="farrow">→</div>
+        <div class="fn fn-red" style="font-size:11px;padding:6px 12px;min-width:80px">취소·환불</div>
+        <div class="farrow">|</div>
+        <div class="fn fn-green" style="font-size:11px;padding:6px 12px;min-width:80px">리뷰 작성</div>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:18px 0"></div>
+    <div style="font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px">관리자 흐름</div>
+    <div class="flow-row">
+      <div class="fn fn-gray" onclick="go('p8')">관리자 로그인<br><sub>ROLE_ADMIN</sub></div><div class="farrow">→</div>
+      <div class="fn fn-gray" onclick="go('p8')">배너·추천 관리<br><sub>공통 콘텐츠</sub></div><div class="farrow">→</div>
+      <div class="fn fn-gray" onclick="go('p8')">여행지 관리<br><sub>템플릿+지도핀</sub></div><div class="farrow">→</div>
+      <div class="fn fn-gray" onclick="go('p8')">예약 관리<br><sub>확정·취소</sub></div><div class="farrow">→</div>
+      <div class="fn fn-gray" onclick="go('p8')">통계 대시보드<br><sub>Vue Chart.js</sub></div>
+    </div>
+    <div class="flow-legend">
+      <div class="lg-item"><div class="lg-dot" style="background:var(--accent)"></div>Vue SPA / SSR</div>
+      <div class="lg-item"><div class="lg-dot" style="background:var(--amber)"></div>Hybrid (인증)</div>
+      <div class="lg-item"><div class="lg-dot" style="background:var(--green)"></div>완료·성공</div>
+      <div class="lg-item"><div class="lg-dot" style="background:var(--red)"></div>오류·취소</div>
+      <div class="lg-item"><div class="lg-dot" style="background:var(--text3)"></div>관리자</div>
+      <div style="margin-left:auto;font-size:11px;color:var(--text3)">노드 클릭 → 화면 상세로 이동</div>
+    </div>
+  </div>
+</div>
+</div><!-- /home -->
+
+
+<!-- ═══════ SCR-01 ═══════ -->
+<div id="page-p1" class="page">
+<div class="scrwrap">
+  <div class="scrhead">
+    <div class="scr-num">SCR-01</div>
+    <div class="scr-title-blk">
+      <div class="scr-title">메인 홈</div>
+      <div class="scr-desc">사용자가 처음 진입하는 랜딩 페이지. Spring MVC가 서버에서 HTML을 미리 렌더링(SSR)한 후 Vue 앱이 마운트되어 배너·검색 등 동적 기능이 활성화됩니다.</div>
+    </div>
+    <span class="render-pill rp-hybrid">Hybrid (SSR+Vue)</span>
+  </div>
+  <div class="tcol">
+    <div class="panel"><div class="panel-head">📐 와이어프레임</div><div class="panel-body">
+      <div class="wfbrowser">
+        <div class="wfchrome">
+          <div class="wfdots"><div class="wfdot" style="background:#ff5f57"></div><div class="wfdot" style="background:#febc2e"></div><div class="wfdot" style="background:#28c840"></div></div>
+          <div class="wfurl">localhost:8080/</div>
+        </div>
+        <div class="wfbody">
+          <div class="wfnav"><div class="wflogo"></div><div class="wfsp"></div><div class="wfbtnsmall">로그인</div></div>
+          <div class="wfbanner">🖼 메인 배너 슬라이더 (관리자 등록)</div>
+          <div class="wfsearch"><div class="wfinput">🔍 여행지를 검색하세요...</div><div class="wfsearch-btn"><svg width="11" height="11" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="5" cy="5" r="4"/><line x1="8" y1="8" x2="11" y2="11"/></svg></div></div>
+          <div class="wftags"><span class="wftag on">🏖 바다</span><span class="wftag">⛰ 산</span><span class="wftag">🏙 도시</span><span class="wftag">🌿 힐링</span></div>
+          <div style="font-size:9px;color:var(--text3);margin-bottom:5px;font-weight:600">인기 여행지</div>
+          <div class="wfgrid">
+            <div class="wfcard"><div class="wfcardimg c1"></div><div class="wfcardinfo"><div class="wfbar w8"></div><div class="wfbar w6"></div></div></div>
+            <div class="wfcard"><div class="wfcardimg c2"></div><div class="wfcardinfo"><div class="wfbar w8"></div><div class="wfbar w4"></div></div></div>
+            <div class="wfcard"><div class="wfcardimg c3"></div><div class="wfcardinfo"><div class="wfbar w8"></div><div class="wfbar w6"></div></div></div>
+            <div class="wfcard"><div class="wfcardimg c4"></div><div class="wfcardinfo"><div class="wfbar w8"></div><div class="wfbar w4"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">👣 사용자 시나리오</div><div class="panel-body">
+      <div class="steps">
+        <div class="step"><div class="stepnum">1</div><div class="stepbody"><div class="steptitle">페이지 로드 — SSR + Vue 마운트</div><div class="stepdesc">Spring Tiles가 서버에서 HTML을 완성해 전달합니다. 이후 Vue 앱이 <code>#app</code>에 마운트되며 <code>onMounted</code>에서 배너·추천 API를 호출해요.</div><div class="steptags"><span class="stag st-amber">SSR</span><span class="stag st-blue">Vue mount</span></div></div></div>
+        <div class="step"><div class="stepnum">2</div><div class="stepbody"><div class="steptitle">배너 슬라이더 자동재생</div><div class="stepdesc"><code>MainBanner.vue</code>가 관리자 배너 목록을 받아와 Swiper로 3초마다 자동 전환합니다. <code>@Scheduled</code>로 만료 배너는 자동 비활성화돼요.</div><div class="steptags"><span class="stag st-blue">Swiper.js</span></div></div></div>
+        <div class="step"><div class="stepnum">3</div><div class="stepbody"><div class="steptitle">검색창 — 300ms debounce 자동완성</div><div class="stepdesc">입력할 때마다 즉시 API를 호출하면 서버 부하가 커집니다. 300ms 동안 추가 입력이 없을 때만 <code>GET /api/travel/suggest</code>를 호출해 드롭다운 5건을 표시해요.</div><div class="steptags"><span class="stag st-amber">debounce 패턴</span></div></div></div>
+        <div class="step"><div class="stepnum">4</div><div class="stepbody"><div class="steptitle">테마 태그 → 검색 결과 이동</div><div class="stepdesc">Pinia <code>filterStore.categoryCode</code>를 업데이트하고 Vue Router로 <code>/search?categoryCode=BEACH</code>로 이동합니다.</div><div class="steptags"><span class="stag st-blue">Pinia</span><span class="stag st-blue">Vue Router</span></div></div></div>
+        <div class="step"><div class="stepnum">5</div><div class="stepbody"><div class="steptitle">추천 카드 + 찜 버튼</div><div class="stepdesc">비로그인 시 로그인 유도 토스트. 로그인 상태라면 즉시 UI 업데이트(낙관적 업데이트) 후 <code>POST /api/wishlist/:id</code>를 호출해요.</div><div class="steptags"><span class="stag st-green">낙관적 업데이트</span></div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">⚙️ 컴포넌트 · API</div><div class="panel-body">
+      <div class="rpsec"><div class="rplab">Vue 컴포넌트</div>
+        <div class="complist">
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">MainBanner.vue</div><div class="compdesc">관리자 배너 Swiper 렌더링</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">SearchBar.vue</div><div class="compdesc">debounce 자동완성 드롭다운</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">ThemeTagFilter.vue</div><div class="compdesc">관리자 등록 태그 목록</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">RecommendList.vue</div><div class="compdesc">추천 카드 그리드</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">WishButton.vue</div><div class="compdesc">찜 토글, 낙관적 업데이트</div></div></div>
+        </div>
+      </div>
+      <div class="rpsec"><div class="rplab">API 연결</div>
+        <div class="apilist">
+          <div class="apirow"><span class="method mget">GET</span><div><div class="apiurl">/api/main/content</div><div class="apinote">배너·태그·추천</div></div></div>
+          <div class="apirow"><span class="method mget">GET</span><div><div class="apiurl">/api/travel/suggest</div><div class="apinote">자동완성 5건</div></div></div>
+          <div class="apirow"><span class="method mpost">POST</span><div><div class="apiurl">/api/wishlist/:id</div><div class="apinote">찜 토글</div></div></div>
+        </div>
+      </div>
+      <div class="tipbox"><div class="tiptitle">💡 학습 포인트</div><div class="tipbody">관리자 배너 저장 → <code style="background:rgba(255,255,255,.5);color:var(--green)">@CacheEvict</code>로 캐시 무효화 → 사용자 메인 화면 코드 수정 없이 자동 업데이트!</div></div>
+    </div></div>
+  </div>
+</div>
+<div class="pagenav">
+  <button class="pnavbtn" disabled>← 이전</button>
+  <span class="pnavinfo">SCR-01 / 08</span>
+  <button class="pnavbtn pr" onclick="go('p2')">다음 — 02 검색 결과 →</button>
+</div>
+</div>
+
+<!-- ═══════ SCR-02 ═══════ -->
+<div id="page-p2" class="page">
+<div class="scrwrap">
+  <div class="scrhead">
+    <div class="scr-num">SCR-02</div>
+    <div class="scr-title-blk">
+      <div class="scr-title">검색 결과</div>
+      <div class="scr-desc">카카오맵 마커와 카드 리스트를 동시에 표시하는 Vue SPA 화면. 필터 변경 시 페이지 새로고침 없이 지도와 리스트가 함께 갱신되고, URL에 조건이 저장되어 링크 공유가 가능해요.</div>
+    </div>
+    <span class="render-pill rp-vue">Vue SPA</span>
+  </div>
+  <div class="tcol">
+    <div class="panel"><div class="panel-head">📐 와이어프레임</div><div class="panel-body">
+      <div class="wfbrowser">
+        <div class="wfchrome"><div class="wfdots"><div class="wfdot" style="background:#ff5f57"></div><div class="wfdot" style="background:#febc2e"></div><div class="wfdot" style="background:#28c840"></div></div><div class="wfurl">/search?keyword=제주</div></div>
+        <div class="wfbody">
+          <div class="wfnav" style="gap:4px;flex-wrap:wrap;padding:5px 6px">
+            <span class="wftag on" style="font-size:9px">지역 ▾</span><span class="wftag" style="font-size:9px">테마 ▾</span><span class="wftag" style="font-size:9px">가격 ▾</span>
+            <div style="flex:1"></div><span class="wftag" style="font-size:9px">정렬 ▾</span>
+          </div>
+          <div class="wfmap" style="height:72px;margin-top:7px">🗺️ 카카오맵 마커 렌더링<div class="wfpin" style="top:28%;left:35%"></div><div class="wfpin" style="top:55%;left:58%;background:var(--green)"></div><div class="wfpin" style="top:42%;left:22%;background:var(--amber)"></div></div>
+          <div class="wflist">
+            <div class="wflistitem" style="border-color:var(--accent-b)"><div class="wfthumb"></div><div class="wfiteminfo"><div class="wfbar w8" style="margin-bottom:4px"></div><div class="wfbar w6"></div></div><span class="wfprice">5만원</span></div>
+            <div class="wflistitem"><div class="wfthumb t2"></div><div class="wfiteminfo"><div class="wfbar w8" style="margin-bottom:4px"></div><div class="wfbar w8"></div></div><span class="wfprice">7만원</span></div>
+            <div class="wflistitem"><div class="wfthumb"></div><div class="wfiteminfo"><div class="wfbar w8" style="margin-bottom:4px"></div><div class="wfbar w6"></div></div><span class="wfprice">4만원</span></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">👣 사용자 시나리오</div><div class="panel-body">
+      <div class="steps">
+        <div class="step"><div class="stepnum">1</div><div class="stepbody"><div class="steptitle">URL 쿼리 파싱 → 자동 검색</div><div class="stepdesc">URL 쿼리를 읽어 <code>filterStore</code>를 초기화하고, <code>onMounted</code>에서 <code>GET /api/travel/search</code> 호출 후 위경도로 카카오맵 마커를 생성해요.</div><div class="steptags"><span class="stag st-blue">onMounted</span><span class="stag st-blue">Kakao Maps API</span></div></div></div>
+        <div class="step"><div class="stepnum">2</div><div class="stepbody"><div class="steptitle">마커 클릭 → 인포윈도우</div><div class="stepdesc">여행지명·별점·가격·썸네일 표시. 10개↑ 결과는 <code>MarkerClusterer</code>로 자동 묶어줘요. "자세히" 버튼 → <code>/travel/:id</code></div><div class="steptags"><span class="stag st-blue">MarkerClusterer</span></div></div></div>
+        <div class="step"><div class="stepnum">3</div><div class="stepbody"><div class="steptitle">필터 변경 → 리스트·마커 동시 갱신</div><div class="stepdesc">Pinia <code>filterStore</code> 조건 변경을 <code>watch</code>가 감지해 API 재호출 → 리스트 교체 + 마커 재렌더. URL도 동기화돼요.</div><div class="steptags"><span class="stag st-blue">Pinia watch</span></div></div></div>
+        <div class="step"><div class="stepnum">4</div><div class="stepbody"><div class="steptitle">카드 hover → 지도 마커 강조</div><div class="stepdesc"><code>filterStore.hoveredId</code>를 <code>MapView.vue</code>가 감지해 해당 마커의 색상·크기를 강조합니다.</div></div></div>
+        <div class="step"><div class="stepnum">5</div><div class="stepbody"><div class="steptitle">스크롤 끝 → 무한 스크롤</div><div class="stepdesc"><code>IntersectionObserver</code>로 바닥 감지 → <code>page++</code> → API 추가 호출 → 결과 append.</div><div class="steptags"><span class="stag st-amber">IntersectionObserver</span></div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">⚙️ 컴포넌트 · API</div><div class="panel-body">
+      <div class="rpsec"><div class="rplab">Vue 컴포넌트</div>
+        <div class="complist">
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">MapView.vue</div><div class="compdesc">마커·클러스터·인포윈도우</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">FilterPanel.vue</div><div class="compdesc">지역·테마·가격 복합 필터</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">TravelList.vue</div><div class="compdesc">리스트 카드, hover 연동</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">SortDropdown.vue</div><div class="compdesc">인기/가격/별점 정렬</div></div></div>
+        </div>
+      </div>
+      <div class="rpsec"><div class="rplab">API 연결</div>
+        <div class="apilist">
+          <div class="apirow"><span class="method mget">GET</span><div><div class="apiurl">/api/travel/search</div><div class="apinote">위경도·필터·페이지 포함</div></div></div>
+        </div>
+      </div>
+      <div class="tipbox"><div class="tiptitle">💡 URL 쿼리 동기화</div><div class="tipbody">/search?regionCode=JEJU&sortType=RATING 형태로 URL에 저장돼요. 링크 공유 시 동일한 검색 조건으로 바로 접속!</div></div>
+    </div></div>
+  </div>
+</div>
+<div class="pagenav">
+  <button class="pnavbtn" onclick="go('p1')">← 01 메인 홈</button>
+  <span class="pnavinfo">SCR-02 / 08</span>
+  <button class="pnavbtn pr" onclick="go('p3')">다음 — 03 여행지 상세 →</button>
+</div>
+</div>
+
+<!-- ═══════ SCR-03 ═══════ -->
+<div id="page-p3" class="page">
+<div class="scrwrap">
+  <div class="scrhead">
+    <div class="scr-num">SCR-03</div>
+    <div class="scr-title-blk">
+      <div class="scr-title">여행지 상세</div>
+      <div class="scr-desc">관리자가 설정한 레이아웃+섹션 블록을 <code>DynamicSection.vue</code>가 자동 렌더링하는 핵심 페이지. 지도 탭은 첫 클릭 시에만 초기화하는 지연 로딩으로 성능을 최적화합니다.</div>
+    </div>
+    <span class="render-pill rp-vue">Vue SPA</span>
+  </div>
+  <div class="tcol">
+    <div class="panel"><div class="panel-head">📐 와이어프레임</div><div class="panel-body">
+      <div class="wfbrowser">
+        <div class="wfchrome"><div class="wfdots"><div class="wfdot" style="background:#ff5f57"></div><div class="wfdot" style="background:#febc2e"></div><div class="wfdot" style="background:#28c840"></div></div><div class="wfurl">/travel/1</div></div>
+        <div class="wfbody">
+          <div class="wfgallmain"></div>
+          <div class="wfgallthumbs"><div class="wfgallthumb on"></div><div class="wfgallthumb"></div><div class="wfgallthumb"></div><div class="wfgallthumb"></div></div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px">협재해수욕장</div>
+          <div style="font-size:10px;color:var(--text3);margin-bottom:7px">★★★★☆ 4.7 · 리뷰 12건</div>
+          <div class="wftabrow"><div class="wftab on">소개</div><div class="wftab">위치</div><div class="wftab">리뷰</div></div>
+          <div class="wfph">섹션 블록 동적 렌더링 영역<br>(관리자 설정 레이아웃 자동 표시)</div>
+          <div class="wfmap" style="height:50px">🗺️ 카카오맵 위치<div class="wfpin" style="top:42%;left:50%"></div></div>
+          <div class="wfcta" style="margin-top:7px">예약하기 — 50,000원~</div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">👣 사용자 시나리오</div><div class="panel-body">
+      <div class="steps">
+        <div class="step"><div class="stepnum">1</div><div class="stepbody"><div class="steptitle">병렬 API 로딩 — Promise.all</div><div class="stepdesc">상세 정보와 예약 가능 날짜를 <code>Promise.all([])</code>로 동시에 호출합니다. 순서대로 호출하는 것보다 빠르게 화면을 그릴 수 있어요.</div><div class="steptags"><span class="stag st-green">Promise.all</span><span class="stag st-gray">Skeleton UI</span></div></div></div>
+        <div class="step"><div class="stepnum">2</div><div class="stepbody"><div class="steptitle">DynamicSection.vue — 섹션 블록 자동 렌더링</div><div class="stepdesc"><code>sections JSON</code>을 파싱해 <code>:is="sectionComponents[section.type]"</code>으로 타입별 컴포넌트를 동적 선택. 새 타입 추가 시 기존 코드 수정 불필요!</div><div class="steptags"><span class="stag st-blue">동적 컴포넌트</span></div></div></div>
+        <div class="step"><div class="stepnum">3</div><div class="stepbody"><div class="steptitle">탭 전환 — v-show로 DOM 유지</div><div class="stepdesc"><code>v-if</code> 대신 <code>v-show</code>를 써서 탭 전환 시 DOM이 제거되지 않습니다. 지도 탭은 <code>mapLoaded</code> 플래그로 첫 클릭 시에만 카카오맵을 초기화해 성능을 최적화해요.</div><div class="steptags"><span class="stag st-amber">v-show vs v-if</span></div></div></div>
+        <div class="step"><div class="stepnum">4</div><div class="stepbody"><div class="steptitle">위치 탭 — 카카오맵 + 길찾기</div><div class="stepdesc">단일 마커 + 반경 5km 주변 여행지 마커. 길찾기: 모바일 <code>kakaomap://</code> 딥링크, PC 카카오맵 웹.</div><div class="steptags"><span class="stag st-blue">Kakao Maps</span></div></div></div>
+        <div class="step"><div class="stepnum">5</div><div class="stepbody"><div class="steptitle">예약 버튼 → Navigation Guard</div><div class="stepdesc"><code>authStore.isLoggedIn</code> 확인 → 비로그인이면 로그인 모달 → 성공 후 <code>/booking/:id</code>로 자동 이동.</div><div class="steptags"><span class="stag st-amber">Nav Guard</span></div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">⚙️ 컴포넌트 · API</div><div class="panel-body">
+      <div class="rpsec"><div class="rplab">Vue 컴포넌트</div>
+        <div class="complist">
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">GallerySlider.vue</div><div class="compdesc">Swiper 메인+썸네일 동기화</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">DynamicSection.vue</div><div class="compdesc">섹션 타입별 동적 렌더링 (핵심!)</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">DetailMapView.vue</div><div class="compdesc">카카오맵, 길찾기, 주변 마커</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">ReviewList.vue</div><div class="compdesc">리뷰 목록, 페이징</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">SkeletonDetail.vue</div><div class="compdesc">로딩 중 스켈레톤 UI</div></div></div>
+        </div>
+      </div>
+      <div class="rpsec"><div class="rplab">API 연결</div>
+        <div class="apilist">
+          <div class="apirow"><span class="method mget">GET</span><div><div class="apiurl">/api/travel/:id</div><div class="apinote">상세 + sections JSON</div></div></div>
+          <div class="apirow"><span class="method mget">GET</span><div><div class="apiurl">/api/travel/:id/availability</div><div class="apinote">예약 불가 날짜</div></div></div>
+          <div class="apirow"><span class="method mget">GET</span><div><div class="apiurl">/api/travel/nearby</div><div class="apinote">반경 5km (Haversine)</div></div></div>
+        </div>
+      </div>
+      <div class="tipbox"><div class="tiptitle">🧩 섹션 타입 14종</div><div class="tipbody">HERO_GALLERY · INTRO_TEXT · IMG_TEXT_L/R · IMG_GRID_2/3 · VIDEO_EMBED · SCHEDULE_TABLE · HIGHLIGHT_BOX · KAKAO_MAP · FAQ_ACCORDION · PRICE_TABLE · NOTICE_BOX · REVIEW_LIST</div></div>
+    </div></div>
+  </div>
+</div>
+<div class="pagenav">
+  <button class="pnavbtn" onclick="go('p2')">← 02 검색 결과</button>
+  <span class="pnavinfo">SCR-03 / 08</span>
+  <button class="pnavbtn pr" onclick="go('p4')">다음 — 04 예약·결제 →</button>
+</div>
+</div>
+
+<!-- ═══════ SCR-04 ═══════ -->
+<div id="page-p4" class="page">
+<div class="scrwrap">
+  <div class="scrhead">
+    <div class="scr-num">SCR-04</div>
+    <div class="scr-title-blk">
+      <div class="scr-title">예약·결제</div>
+      <div class="scr-desc">날짜·인원·폼 입력·PG 결제까지 한 페이지 완료. VeeValidate 실시간 검증, Pinia computed 금액 계산, Spring <code>@Transactional</code> 안전한 결제 처리를 배울 수 있어요.</div>
+    </div>
+    <span class="render-pill rp-hybrid">Hybrid</span>
+  </div>
+  <div class="tcol">
+    <div class="panel"><div class="panel-head">📐 와이어프레임</div><div class="panel-body">
+      <div class="wfbrowser">
+        <div class="wfchrome"><div class="wfdots"><div class="wfdot" style="background:#ff5f57"></div><div class="wfdot" style="background:#febc2e"></div><div class="wfdot" style="background:#28c840"></div></div><div class="wfurl">/booking/1</div></div>
+        <div class="wfbody">
+          <div style="font-size:12px;font-weight:600;margin-bottom:8px">협재해수욕장 예약</div>
+          <div style="display:flex;gap:5px;margin-bottom:7px">
+            <div style="flex:1;height:26px;border-radius:5px;background:var(--white);border:1px solid var(--border2);display:flex;align-items:center;padding:0 8px;font-size:9.5px;color:var(--text3)">2025-08-01</div>
+            <span style="font-size:11px;color:var(--text3);align-self:center">~</span>
+            <div style="flex:1;height:26px;border-radius:5px;background:var(--white);border:1px solid var(--border2);display:flex;align-items:center;padding:0 8px;font-size:9.5px;color:var(--text3)">2025-08-03</div>
+          </div>
+          <div class="wfcounter"><span style="font-size:10px;color:var(--text3)">성인</span><div style="display:flex;align-items:center;gap:7px"><div class="wfcbtn">−</div><span style="font-family:var(--mono);font-size:12px;font-weight:700">2</span><div class="wfcbtn" style="background:var(--accent-l);border-color:var(--accent-b);color:var(--accent)">+</div></div></div>
+          <div class="wfcounter"><span style="font-size:10px;color:var(--text3)">어린이</span><div style="display:flex;align-items:center;gap:7px"><div class="wfcbtn">−</div><span style="font-family:var(--mono);font-size:12px;font-weight:700">0</span><div class="wfcbtn" style="background:var(--accent-l);border-color:var(--accent-b);color:var(--accent)">+</div></div></div>
+          <div style="margin:5px 0">
+            <div class="wffieldrow"><div class="wfflabel">이름 *</div><div class="wfffield"></div></div>
+            <div class="wffieldrow"><div class="wfflabel">연락처 *</div><div class="wfffield err"></div></div>
+            <div class="wffieldrow"><div class="wfflabel">이메일 *</div><div class="wfffield"></div></div>
+          </div>
+          <div class="wftotal"><span style="font-size:10px;color:var(--green);font-weight:500">총 결제금액</span><span style="font-family:var(--mono);font-size:13px;font-weight:700;color:var(--green)">100,000원</span></div>
+          <div class="wfcta">결제하기</div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">👣 사용자 시나리오</div><div class="panel-body">
+      <div class="steps">
+        <div class="step"><div class="stepnum">1</div><div class="stepbody"><div class="steptitle">날짜 선택 → 박 수 자동 계산</div><div class="stepdesc"><code>DateRangePicker.vue</code>에서 예약 불가 날짜는 비활성화. 날짜 선택 시 박 수 자동 계산 → Pinia <code>bookingStore</code> 저장.</div><div class="steptags"><span class="stag st-blue">DateRangePicker</span></div></div></div>
+        <div class="step"><div class="stepnum">2</div><div class="stepbody"><div class="steptitle">인원 변경 → 총액 실시간 반영</div><div class="stepdesc">Pinia <code>computed</code>: 단가 × 인원 × 박수 = 총액. 인원 ± 버튼마다 하단 총액이 즉시 바뀌어요.</div><div class="steptags"><span class="stag st-blue">Pinia computed</span></div></div></div>
+        <div class="step"><div class="stepnum">3</div><div class="stepbody"><div class="steptitle">폼 입력 — 실시간 유효성 검사</div><div class="stepdesc">VeeValidate + Yup: 이름(2자↑)·연락처(010 형식)·이메일. 오류 필드는 빨간 테두리 + 안내 문구.</div><div class="steptags"><span class="stag st-amber">VeeValidate + Yup</span></div></div></div>
+        <div class="step"><div class="stepnum">4</div><div class="stepbody"><div class="steptitle">결제 완료 → Spring @Transactional</div><div class="stepdesc"><code>POST /api/reservation</code> 하나로 ①가용인원 차감 ②예약 INSERT ③PG 결제 확인 ④UUID 예약번호 ⑤CONFIRMED 변경이 하나의 트랜잭션. 중간 오류 시 전체 롤백!</div><div class="steptags"><span class="stag st-green">@Transactional</span><span class="stag st-green">@Async 이메일</span></div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">⚙️ 컴포넌트 · API</div><div class="panel-body">
+      <div class="rpsec"><div class="rplab">Vue 컴포넌트</div>
+        <div class="complist">
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">DateRangePicker.vue</div><div class="compdesc">체크인/아웃, 불가날짜 비활성</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">GuestCounter.vue</div><div class="compdesc">인원 ± 조절</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">BookingForm.vue</div><div class="compdesc">VeeValidate 폼 + 약관 동의</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">PaymentResult.vue</div><div class="compdesc">PG 콜백 수신 및 결과 처리</div></div></div>
+        </div>
+      </div>
+      <div class="rpsec"><div class="rplab">API 연결</div>
+        <div class="apilist">
+          <div class="apirow"><span class="method mget">GET</span><div><div class="apiurl">/api/travel/:id/availability</div><div class="apinote">예약 불가 날짜</div></div></div>
+          <div class="apirow"><span class="method mpost">POST</span><div><div class="apiurl">/api/reservation</div><div class="apinote">예약 + PG (@Transactional)</div></div></div>
+        </div>
+      </div>
+      <div class="warnbox"><div class="warntitle">⚠️ 취소 환불 정책</div><div class="warnbody">7일 전~ 100% · 3~7일 전 80% · 1~3일 전 50% · 당일 환불 불가</div></div>
+    </div></div>
+  </div>
+</div>
+<div class="pagenav">
+  <button class="pnavbtn" onclick="go('p3')">← 03 여행지 상세</button>
+  <span class="pnavinfo">SCR-04 / 08</span>
+  <button class="pnavbtn pr" onclick="go('p5')">다음 — 05 예약 완료 →</button>
+</div>
+</div>
+
+<!-- ═══════ SCR-05 ═══════ -->
+<div id="page-p5" class="page">
+<div class="scrwrap">
+  <div class="scrhead">
+    <div class="scr-num">SCR-05</div>
+    <div class="scr-title-blk">
+      <div class="scr-title">예약 완료</div>
+      <div class="scr-desc">결제 성공 후 예약번호·일정·금액과 오시는 길 지도를 보여줍니다. <code>@Async</code>로 이메일을 비동기 발송하고, Kakao Static Map API는 서버에서 호출해 이메일에 지도 이미지를 포함해요.</div>
+    </div>
+    <span class="render-pill rp-done">완료 화면</span>
+  </div>
+  <div class="tcol">
+    <div class="panel"><div class="panel-head">📐 와이어프레임</div><div class="panel-body">
+      <div class="wfbrowser">
+        <div class="wfchrome"><div class="wfdots"><div class="wfdot" style="background:#ff5f57"></div><div class="wfdot" style="background:#febc2e"></div><div class="wfdot" style="background:#28c840"></div></div><div class="wfurl">/booking/complete</div></div>
+        <div class="wfbody">
+          <div class="wfsuccessicon">✅</div>
+          <div style="font-size:12px;font-weight:600;text-align:center;margin-bottom:4px">예약이 완료되었어요!</div>
+          <div class="wfresid">RESV-2025-001234</div>
+          <div class="wfinfobox">
+            <div class="wfinforow"><span class="wfinfokey">여행지</span><span class="wfinfoval">협재해수욕장</span></div>
+            <div class="wfinforow"><span class="wfinfokey">체크인</span><span class="wfinfoval">2025-08-01</span></div>
+            <div class="wfinforow"><span class="wfinfokey">체크아웃</span><span class="wfinfoval">2025-08-03</span></div>
+            <div class="wfinforow"><span class="wfinfokey">결제금액</span><span class="wfinfoval" style="color:var(--green)">100,000원</span></div>
+          </div>
+          <div class="wfmap" style="height:48px;margin-bottom:6px">🗺️ 오시는 길 지도<div class="wfpin" style="top:45%;left:50%"></div></div>
+          <div style="font-size:9px;color:var(--text3);text-align:center;margin-bottom:7px">확인 이메일이 발송됐어요 📧</div>
+          <div style="display:flex;gap:5px">
+            <div class="wfcta blue" style="flex:1">예약 내역</div>
+            <div style="flex:1;height:28px;border-radius:7px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--text3)">홈으로</div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">👣 사용자 시나리오</div><div class="panel-body">
+      <div class="steps">
+        <div class="step"><div class="stepnum">1</div><div class="stepbody"><div class="steptitle">완료 화면 진입 + URL 방어 처리</div><div class="stepdesc">결제 성공 → <code>Router.push('/booking/complete?resvId=...')</code>. <code>resvId</code> 없는 직접 접속은 홈으로 리다이렉트. 뒤로가기 방지를 위해 히스토리 <code>replace</code> 처리.</div></div></div>
+        <div class="step"><div class="stepnum">2</div><div class="stepbody"><div class="steptitle">예약 정보 표시</div><div class="stepdesc">예약번호(UUID 앞 8자리)·여행지·체크인/아웃·인원·결제금액 표시. 성공 체크 아이콘 애니메이션.</div></div></div>
+        <div class="step"><div class="stepnum">3</div><div class="stepbody"><div class="steptitle">오시는 길 지도 + 길찾기</div><div class="stepdesc">카카오맵 미니 지도로 여행지 위치 표시. 길찾기: 모바일 <code>kakaomap://</code> 딥링크, PC 웹.</div></div></div>
+        <div class="step"><div class="stepnum">4</div><div class="stepbody"><div class="steptitle">이메일 자동 발송 (@Async)</div><div class="stepdesc"><code>MailService</code>가 <code>@Async</code>로 비동기 실행. Thymeleaf HTML + Kakao Static Map URL + 길찾기 링크. REST API 키는 서버에서만 사용해 클라이언트 노출 방지!</div><div class="steptags"><span class="stag st-green">@Async</span><span class="stag st-amber">Static Map API</span></div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">⚙️ 컴포넌트 · API</div><div class="panel-body">
+      <div class="rpsec"><div class="rplab">이메일 구성 요소</div>
+        <div class="complist">
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">예약번호·일정·금액</div><div class="compdesc">Thymeleaf HTML 템플릿</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">오시는 길 지도</div><div class="compdesc">Kakao Static Map API (서버 생성)</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">길찾기 링크</div><div class="compdesc">위경도 파라미터 URL 조합</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">발송 방식</div><div class="compdesc">@Async + JavaMail (비동기)</div></div></div>
+        </div>
+      </div>
+      <div class="rpsec"><div class="rplab">API 연결</div>
+        <div class="apilist">
+          <div class="apirow"><span class="method mget">GET</span><div><div class="apiurl">/api/my/reservations/:id</div><div class="apinote">완료 정보 조회</div></div></div>
+        </div>
+      </div>
+      <div class="tipbox"><div class="tiptitle">🔐 보안 포인트</div><div class="tipbody">Static Map은 서버에서 URL을 만들어 이메일에 img 태그로 삽입해요. 카카오 REST API 키가 브라우저에 절대 노출되지 않아 안전합니다!</div></div>
+    </div></div>
+  </div>
+</div>
+<div class="pagenav">
+  <button class="pnavbtn" onclick="go('p4')">← 04 예약·결제</button>
+  <span class="pnavinfo">SCR-05 / 08</span>
+  <button class="pnavbtn pr" onclick="go('p6')">다음 — 06 마이페이지 →</button>
+</div>
+</div>
+
+<!-- ═══════ SCR-06 ═══════ -->
+<div id="page-p6" class="page">
+<div class="scrwrap">
+  <div class="scrhead">
+    <div class="scr-num">SCR-06</div>
+    <div class="scr-title-blk">
+      <div class="scr-title">마이페이지</div>
+      <div class="scr-desc">로그인 사용자 전용. 예약·찜·리뷰 통계를 한눈에 보여주고 서브 메뉴로 빠르게 이동합니다. Navigation Guard로 비로그인 접근을 막아요.</div>
+    </div>
+    <span class="render-pill rp-vue">Vue SPA</span>
+  </div>
+  <div class="tcol">
+    <div class="panel"><div class="panel-head">📐 와이어프레임</div><div class="panel-body">
+      <div class="wfbrowser">
+        <div class="wfchrome"><div class="wfdots"><div class="wfdot" style="background:#ff5f57"></div><div class="wfdot" style="background:#febc2e"></div><div class="wfdot" style="background:#28c840"></div></div><div class="wfurl">/my</div></div>
+        <div class="wfbody">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <div style="width:34px;height:34px;border-radius:50%;background:var(--accent-l);border:2px solid var(--accent-b);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent)">홍</div>
+            <div><div style="font-size:12px;font-weight:600">홍길동 님</div><div style="font-size:10px;color:var(--text3)">hong@email.com</div></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-bottom:11px">
+            <div style="padding:7px;background:var(--green-l);border:1px solid var(--green-b);border-radius:7px;text-align:center"><div style="font-size:15px;font-weight:700;color:var(--green)">4</div><div style="font-size:8px;color:var(--green)">예약</div></div>
+            <div style="padding:7px;background:var(--accent-l);border:1px solid var(--accent-b);border-radius:7px;text-align:center"><div style="font-size:15px;font-weight:700;color:var(--accent)">7</div><div style="font-size:8px;color:var(--accent)">찜</div></div>
+            <div style="padding:7px;background:var(--amber-l);border:1px solid var(--amber-b);border-radius:7px;text-align:center"><div style="font-size:15px;font-weight:700;color:var(--amber)">2</div><div style="font-size:8px;color:var(--amber)">리뷰</div></div>
+          </div>
+          <div class="wflist">
+            <div class="wflistitem"><div class="wfthumb"></div><div class="wfiteminfo"><div class="wfbar w6" style="margin-bottom:3px"></div></div><span style="font-size:11px;color:var(--text3)">›</span></div>
+            <div class="wflistitem"><div class="wfthumb t2"></div><div class="wfiteminfo"><div class="wfbar" style="width:50%;margin-bottom:3px"></div></div><span style="font-size:11px;color:var(--text3)">›</span></div>
+            <div class="wflistitem"><div class="wfthumb"></div><div class="wfiteminfo"><div class="wfbar w4" style="margin-bottom:3px"></div></div><span style="font-size:11px;color:var(--text3)">›</span></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">👣 사용자 시나리오</div><div class="panel-body">
+      <div class="steps">
+        <div class="step"><div class="stepnum">1</div><div class="stepbody"><div class="steptitle">진입 시 인증 체크 — Navigation Guard</div><div class="stepdesc">Vue Router <code>beforeEach</code>에서 <code>authStore.isLoggedIn</code>을 확인합니다. 비로그인이면 <code>/login?redirect=/my</code>로 이동하고 로그인 후 자동 복귀해요.</div><div class="steptags"><span class="stag st-amber">Nav Guard</span></div></div></div>
+        <div class="step"><div class="stepnum">2</div><div class="stepbody"><div class="steptitle">프로필 + 통계 배지 표시</div><div class="stepdesc"><code>onMounted</code>에서 <code>GET /api/my/summary</code>를 호출해 예약·찜·리뷰 건수를 통계 카드에 표시합니다.</div></div></div>
+        <div class="step"><div class="stepnum">3</div><div class="stepbody"><div class="steptitle">메뉴 클릭 → 서브 페이지 이동</div><div class="stepdesc">예약 내역 / 찜 목록 / 내 리뷰 / 정보 수정을 클릭하면 Vue Router <code>push</code>로 이동합니다.</div></div></div>
+        <div class="step"><div class="stepnum">4</div><div class="stepbody"><div class="steptitle">로그아웃 처리</div><div class="stepdesc"><code>POST /api/auth/logout</code> → Spring Security 세션 무효화 → Pinia 스토어 전체 초기화 → 홈으로 이동.</div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">⚙️ 컴포넌트 · API</div><div class="panel-body">
+      <div class="rpsec"><div class="rplab">서브 메뉴 구성</div>
+        <div class="complist">
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">예약 내역</div><div class="compdesc">상태별 탭, 취소·리뷰 연결</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">찜 목록</div><div class="compdesc">찜한 여행지 카드 그리드</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">내 리뷰</div><div class="compdesc">작성 리뷰 목록·수정·삭제</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">정보 수정</div><div class="compdesc">이름·연락처·비밀번호 변경</div></div></div>
+        </div>
+      </div>
+      <div class="rpsec"><div class="rplab">API 연결</div>
+        <div class="apilist">
+          <div class="apirow"><span class="method mget">GET</span><div><div class="apiurl">/api/my/summary</div><div class="apinote">통계 배지 건수</div></div></div>
+          <div class="apirow"><span class="method mpost">POST</span><div><div class="apiurl">/api/auth/logout</div><div class="apinote">세션 무효화</div></div></div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div>
+<div class="pagenav">
+  <button class="pnavbtn" onclick="go('p5')">← 05 예약 완료</button>
+  <span class="pnavinfo">SCR-06 / 08</span>
+  <button class="pnavbtn pr" onclick="go('p7')">다음 — 07 예약 내역 →</button>
+</div>
+</div>
+
+<!-- ═══════ SCR-07 ═══════ -->
+<div id="page-p7" class="page">
+<div class="scrwrap">
+  <div class="scrhead">
+    <div class="scr-num">SCR-07</div>
+    <div class="scr-title-blk">
+      <div class="scr-title">예약 내역</div>
+      <div class="scr-desc">모든 예약을 상태별 탭으로 분류. 카드 클릭 시 카카오맵 미니맵이 포함된 상세 모달이 열리며, 이용 완료 건에는 리뷰 작성 버튼이 표시됩니다.</div>
+    </div>
+    <span class="render-pill rp-vue">Vue SPA</span>
+  </div>
+  <div class="tcol">
+    <div class="panel"><div class="panel-head">📐 와이어프레임</div><div class="panel-body">
+      <div class="wfbrowser">
+        <div class="wfchrome"><div class="wfdots"><div class="wfdot" style="background:#ff5f57"></div><div class="wfdot" style="background:#febc2e"></div><div class="wfdot" style="background:#28c840"></div></div><div class="wfurl">/my/reservations</div></div>
+        <div class="wfbody">
+          <div class="wfstabs"><div class="wfstab on">전체 4</div><div class="wfstab">확정 2</div><div class="wfstab">완료 1</div><div class="wfstab">취소 1</div></div>
+          <div class="wfrcard"><div class="wfrhead"><span class="wfrname">협재해수욕장</span><span class="wfbadge bk">예약확정</span></div><div style="font-size:9px;color:var(--text3);margin-bottom:5px">08.01 ~ 08.03 · 성인 2명</div><div style="display:flex;justify-content:flex-end"><div style="padding:3px 9px;border-radius:4px;font-size:9px;background:var(--red-l);color:var(--red);border:1px solid var(--red-b)">취소 요청</div></div></div>
+          <div class="wfrcard"><div class="wfrhead"><span class="wfrname">한라산 등반</span><span class="wfbadge bd">이용완료</span></div><div style="font-size:9px;color:var(--text3);margin-bottom:5px">07.15 ~ 07.16 · 성인 1명</div><div style="display:flex;justify-content:flex-end"><div style="padding:3px 9px;border-radius:4px;font-size:9px;background:var(--amber-l);color:var(--amber);border:1px solid var(--amber-b)">⭐ 리뷰 쓰기</div></div></div>
+          <div class="wfrcard"><div class="wfrhead"><span class="wfrname">성산일출봉</span><span class="wfbadge bc">취소완료</span></div><div style="font-size:9px;color:var(--text3)">06.20 · 성인 2명</div></div>
+          <div style="font-size:9px;color:var(--text3);text-align:center;margin-top:7px;padding:5px;border:1px dashed var(--border2);border-radius:5px">카드 클릭 → 상세 모달 + 카카오맵 미니맵</div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">👣 사용자 시나리오</div><div class="panel-body">
+      <div class="steps">
+        <div class="step"><div class="stepnum">1</div><div class="stepbody"><div class="steptitle">전체 예약 로딩 + 스켈레톤 UI</div><div class="stepdesc"><code>onMounted</code>에서 <code>GET /api/my/reservations</code>(위경도 포함)를 호출해 <code>Pinia reservationStore</code>에 저장. 로딩 중 스켈레톤 카드 3개 표시.</div></div></div>
+        <div class="step"><div class="stepnum">2</div><div class="stepbody"><div class="steptitle">상태 탭 — computed 로컬 필터</div><div class="stepdesc">탭 클릭 시 API 재호출 없이 Pinia <code>computed</code>가 목록을 상태별 분류. 탭 배지에 건수 실시간 표시.</div><div class="steptags"><span class="stag st-blue">Pinia computed</span></div></div></div>
+        <div class="step"><div class="stepnum">3</div><div class="stepbody"><div class="steptitle">카드 클릭 → 상세 모달 + 카카오 미니맵</div><div class="stepdesc">예약번호·일정·금액·상태와 카카오맵 미니맵(300×200px)으로 여행지 위치 시각화. 길찾기 버튼 제공.</div><div class="steptags"><span class="stag st-blue">Kakao 미니맵</span></div></div></div>
+        <div class="step"><div class="stepnum">4</div><div class="stepbody"><div class="steptitle">취소 → 환불 정책 모달</div><div class="stepdesc"><code>GET cancel-policy</code>로 환불 금액 계산 후 모달 표시. 확인 시 <code>PATCH cancel</code>로 DB 상태변경 + PG 환불 + 이메일 처리.</div></div></div>
+        <div class="step"><div class="stepnum">5</div><div class="stepbody"><div class="steptitle">이용완료 → 리뷰 작성 인라인 폼</div><div class="stepdesc"><code>statusCode=COMPLETED && reviewWritten=false</code> 조건 시 버튼 표시. 인라인 폼으로 별점+텍스트 입력 → <code>POST /api/review</code>.</div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">⚙️ 컴포넌트 · API</div><div class="panel-body">
+      <div class="rpsec"><div class="rplab">Vue 컴포넌트</div>
+        <div class="complist">
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">ReservationCard.vue</div><div class="compdesc">예약 카드, 상태 배지</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">ReservationModal.vue</div><div class="compdesc">상세 모달 + 카카오 미니맵</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">CancelPolicyModal.vue</div><div class="compdesc">환불 정책 + 취소 확인</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">ReviewForm.vue</div><div class="compdesc">인라인 리뷰 작성 폼</div></div></div>
+        </div>
+      </div>
+      <div class="rpsec"><div class="rplab">API 연결</div>
+        <div class="apilist">
+          <div class="apirow"><span class="method mget">GET</span><div><div class="apiurl">/api/my/reservations</div><div class="apinote">위경도 포함</div></div></div>
+          <div class="apirow"><span class="method mget">GET</span><div><div class="apiurl">/api/reservation/:id/cancel-policy</div></div></div>
+          <div class="apirow"><span class="method mpatch">PATCH</span><div><div class="apiurl">/api/reservation/:id/cancel</div></div></div>
+          <div class="apirow"><span class="method mpost">POST</span><div><div class="apiurl">/api/review</div><div class="apinote">리뷰 작성</div></div></div>
+        </div>
+      </div>
+    </div></div>
+  </div>
+</div>
+<div class="pagenav">
+  <button class="pnavbtn" onclick="go('p6')">← 06 마이페이지</button>
+  <span class="pnavinfo">SCR-07 / 08</span>
+  <button class="pnavbtn pr" onclick="go('p8')">다음 — 08 관리자 →</button>
+</div>
+</div>
+
+<!-- ═══════ SCR-08 ═══════ -->
+<div id="page-p8" class="page">
+<div class="scrwrap">
+  <div class="scrhead">
+    <div class="scr-num">SCR-08</div>
+    <div class="scr-title-blk">
+      <div class="scr-title">관리자</div>
+      <div class="scr-desc">ROLE_ADMIN 전용 백오피스. eGovFrame SSR 기반으로 여행지·배너·예약·회원을 관리합니다. 지도 핀으로 저장한 위경도가 검색 마커·상세 지도·예약 이메일 Static Map에 모두 자동 반영돼요.</div>
+    </div>
+    <span class="render-pill rp-egov">eGov SSR</span>
+  </div>
+  <div class="tcol">
+    <div class="panel"><div class="panel-head">📐 와이어프레임</div><div class="panel-body">
+      <div class="wfbrowser">
+        <div class="wfchrome"><div class="wfdots"><div class="wfdot" style="background:#ff5f57"></div><div class="wfdot" style="background:#febc2e"></div><div class="wfdot" style="background:#28c840"></div></div><div class="wfurl">/admin/dashboard</div></div>
+        <div class="wfbody">
+          <div class="wfadmin">
+            <div class="wfsidebar"><div class="wfsitem on" style="font-size:7px">대시</div><div class="wfsitem" style="font-size:7px">배너</div><div class="wfsitem" style="font-size:7px">여행</div><div class="wfsitem" style="font-size:7px">예약</div><div class="wfsitem" style="font-size:7px">회원</div><div class="wfsitem" style="font-size:7px">통계</div></div>
+            <div class="wfmain">
+              <div class="wfstatgrid">
+                <div class="wfstat"><div class="wfstatval" style="color:var(--green)">127</div><div class="wfstatlbl">오늘 예약</div></div>
+                <div class="wfstat"><div class="wfstatval" style="color:var(--accent)">1,842</div><div class="wfstatlbl">총 회원</div></div>
+                <div class="wfstat"><div class="wfstatval" style="color:var(--amber)">48</div><div class="wfstatlbl">여행지 수</div></div>
+                <div class="wfstat"><div class="wfstatval" style="color:var(--green)">94%</div><div class="wfstatlbl">만족도</div></div>
+              </div>
+              <div class="wfchart"><div class="wfchartbar" style="height:40%"></div><div class="wfchartbar" style="height:65%"></div><div class="wfchartbar" style="height:45%"></div><div class="wfchartbar" style="height:85%"></div><div class="wfchartbar" style="height:55%"></div><div class="wfchartbar" style="height:90%"></div><div class="wfchartbar" style="height:70%"></div></div>
+              <div style="font-size:8px;color:var(--text3);text-align:center;margin-bottom:5px">일별 예약 현황 (Vue Chart.js)</div>
+              <div style="padding:5px 7px;background:var(--amber-l);border-radius:5px;font-size:8px;color:var(--amber);border:1px solid var(--amber-b)">지도 핀 → Kakao Places + Geocoder → lat/lng 저장</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">🔧 주요 관리 기능</div><div class="panel-body">
+      <div class="steps">
+        <div class="step"><div class="stepnum">1</div><div class="stepbody"><div class="steptitle">여행지 등록 — 지도 핀 설정</div><div class="stepdesc">eGovFrame 폼 안에 <code>AdminMapPicker.vue</code>를 마운트. 주소 검색(Kakao Places) → 지도 이동 + 핀 자동 설정. 지도 클릭 시 역지오코딩으로 주소 자동완성. 저장된 위경도가 검색 마커·상세 지도·이메일 Static Map에 모두 반영!</div><div class="steptags"><span class="stag st-blue">Kakao Places</span><span class="stag st-blue">Geocoder</span></div></div></div>
+        <div class="step"><div class="stepnum">2</div><div class="stepbody"><div class="steptitle">메인 배너·추천 관리 — @CacheEvict</div><div class="stepdesc">저장 시 <code>@CacheEvict</code>로 캐시 즉시 무효화. <code>@Scheduled</code>로 매일 자정 만료 배너 자동 비활성화.</div><div class="steptags"><span class="stag st-green">@CacheEvict</span><span class="stag st-amber">@Scheduled</span></div></div></div>
+        <div class="step"><div class="stepnum">3</div><div class="stepbody"><div class="steptitle">여행지 상세 템플릿 빌더</div><div class="stepdesc">레이아웃 10종 선택 → 섹션 블록 14종 드래그&드롭 조합 → <code>sections JSON</code> DB 저장 → 사용자 상세 페이지 즉시 변경.</div><div class="steptags"><span class="stag st-gray">섹션 블록 14종</span></div></div></div>
+        <div class="step"><div class="stepnum">4</div><div class="stepbody"><div class="steptitle">예약 관리 + 통계 대시보드</div><div class="stepdesc">SearchVO 패턴으로 복합 검색. 일괄 확정/취소 + 알림 이메일 자동 발송. <code>StatsDashboard.vue</code>로 일별/주별 Chart.js 시각화.</div><div class="steptags"><span class="stag st-green">Vue Chart.js</span></div></div></div>
+      </div>
+    </div></div>
+    <div class="panel"><div class="panel-head">⚙️ 컴포넌트 · API</div><div class="panel-body">
+      <div class="rpsec"><div class="rplab">관리자 메뉴 구성</div>
+        <div class="complist">
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">대시보드</div><div class="compdesc">SSR+Vue · Chart.js 통계</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">메인 콘텐츠 관리</div><div class="compdesc">배너·태그·추천 등록·순서·기간</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">여행지 관리</div><div class="compdesc">CRUD + 지도 핀 + 템플릿 편집</div></div></div>
+          <div class="compitem"><div class="compdot"></div><div><div class="compname">예약·회원·공통코드</div><div class="compdesc">확정·취소·권한·코드 CRUD</div></div></div>
+        </div>
+      </div>
+      <div class="rpsec"><div class="rplab">관리자 API</div>
+        <div class="apilist">
+          <div class="apirow"><span class="method mpost">POST</span><div><div class="apiurl">/admin/main-content</div><div class="apinote">@CacheEvict 즉시 반영</div></div></div>
+          <div class="apirow"><span class="method mpatch">PATCH</span><div><div class="apiurl">/admin/main-content/reorder</div></div></div>
+          <div class="apirow"><span class="method mpatch">PATCH</span><div><div class="apiurl">/admin/travel/:id/sections</div></div></div>
+        </div>
+      </div>
+      <div class="tipbox"><div class="tiptitle">🔐 보안</div><div class="tipbody">Spring Security <code>/admin/**</code>는 ROLE_ADMIN만 접근. 일반 사용자 접근 시 403 자동 리다이렉트.</div></div>
+    </div></div>
+  </div>
+</div>
+<div class="pagenav">
+  <button class="pnavbtn" onclick="go('p7')">← 07 예약 내역</button>
+  <span class="pnavinfo">SCR-08 / 08</span>
+  <button class="pnavbtn pr" onclick="go('db')">다음 — DB · API 명세 →</button>
+</div>
+</div>
+
+<!-- ═══════ DB · API ═══════ -->
+<div id="page-db" class="page">
+<div class="scrwrap">
+  <div class="scrhead">
+    <div class="scr-num">DB · API</div>
+    <div class="scr-title-blk">
+      <div class="scr-title">DB 설계 &amp; API 명세</div>
+      <div class="scr-desc">전체 테이블 9개와 REST API 15개 전체 목록입니다.</div>
+    </div>
+  </div>
+
+  <div class="sec-label" style="margin-bottom:14px">테이블 구성</div>
+  <div class="dbgrid">
+    <div class="dbtable"><div class="dbthead"><div class="dbtname">TB_MEMBER</div><div class="dbtdesc">회원</div></div><table><thead><tr><th>컬럼</th><th>타입</th><th>비고</th></tr></thead><tbody>
+      <tr><td><span class="cpk">MEMBER_ID</span></td><td class="ctype">BIGINT</td><td class="cnote">PK, AUTO_INCREMENT</td></tr>
+      <tr><td class="ckey">PASSWORD</td><td class="ctype">VARCHAR(200)</td><td class="cnote">BCrypt 암호화</td></tr>
+      <tr><td class="ckey">EMAIL</td><td class="ctype">VARCHAR(100)</td><td class="cnote">UNIQUE</td></tr>
+      <tr><td>ROLE</td><td class="ctype">VARCHAR(20)</td><td class="cnote">USER | ADMIN</td></tr>
+      <tr><td>USE_YN</td><td class="ctype">CHAR(1)</td><td class="cnote">Y: 정상, N: 정지</td></tr>
+    </tbody></table></div>
+    <div class="dbtable"><div class="dbthead"><div class="dbtname">TB_TRAVEL</div><div class="dbtdesc">여행지</div></div><table><thead><tr><th>컬럼</th><th>타입</th><th>비고</th></tr></thead><tbody>
+      <tr><td><span class="cpk">TRAVEL_ID</span></td><td class="ctype">BIGINT</td><td class="cnote">PK</td></tr>
+      <tr><td>LATITUDE</td><td class="ctype">DECIMAL(10,7)</td><td class="cnote">위도 (지도 핀)</td></tr>
+      <tr><td>LONGITUDE</td><td class="ctype">DECIMAL(10,7)</td><td class="cnote">경도</td></tr>
+      <tr><td class="ckey">LAYOUT_TYPE</td><td class="ctype">VARCHAR(30)</td><td class="cnote">레이아웃 코드</td></tr>
+      <tr><td class="ckey">SECTIONS_JSON</td><td class="ctype">LONGTEXT</td><td class="cnote">섹션 블록 JSON</td></tr>
+    </tbody></table></div>
+    <div class="dbtable"><div class="dbthead"><div class="dbtname">TB_RESERVATION</div><div class="dbtdesc">예약</div></div><table><thead><tr><th>컬럼</th><th>타입</th><th>비고</th></tr></thead><tbody>
+      <tr><td><span class="cpk">RESV_ID</span></td><td class="ctype">VARCHAR(36)</td><td class="cnote">UUID, PK</td></tr>
+      <tr><td>MEMBER_ID</td><td class="ctype">BIGINT</td><td class="cnote">FK → TB_MEMBER</td></tr>
+      <tr><td>TRAVEL_ID</td><td class="ctype">BIGINT</td><td class="cnote">FK → TB_TRAVEL</td></tr>
+      <tr><td>CHECKIN_DT</td><td class="ctype">DATE</td><td class="cnote"></td></tr>
+      <tr><td>STATUS_CD</td><td class="ctype">VARCHAR(20)</td><td class="cnote">PENDING|CONFIRMED|COMPLETED|CANCELLED</td></tr>
+    </tbody></table></div>
+    <div class="dbtable"><div class="dbthead"><div class="dbtname">TB_PAYMENT</div><div class="dbtdesc">결제</div></div><table><thead><tr><th>컬럼</th><th>타입</th><th>비고</th></tr></thead><tbody>
+      <tr><td><span class="cpk">PAY_ID</span></td><td class="ctype">BIGINT</td><td class="cnote">PK</td></tr>
+      <tr><td>RESV_ID</td><td class="ctype">VARCHAR(36)</td><td class="cnote">FK → TB_RESERVATION</td></tr>
+      <tr><td>PG_TXN_ID</td><td class="ctype">VARCHAR(100)</td><td class="cnote">PG사 거래 ID</td></tr>
+      <tr><td>PAY_AMOUNT</td><td class="ctype">INT</td><td class="cnote">결제 금액(원)</td></tr>
+      <tr><td>REFUND_AMOUNT</td><td class="ctype">INT</td><td class="cnote">환불 금액(원)</td></tr>
+    </tbody></table></div>
+    <div class="dbtable"><div class="dbthead"><div class="dbtname">TB_MAIN_CONTENT</div><div class="dbtdesc">메인 공통 콘텐츠</div></div><table><thead><tr><th>컬럼</th><th>타입</th><th>비고</th></tr></thead><tbody>
+      <tr><td><span class="cpk">CONTENT_ID</span></td><td class="ctype">BIGINT</td><td class="cnote">PK</td></tr>
+      <tr><td class="ckey">AREA_CODE</td><td class="ctype">VARCHAR(30)</td><td class="cnote">MAIN_BANNER | THEME_TAGS …</td></tr>
+      <tr><td>SORT_ORDER</td><td class="ctype">INT</td><td class="cnote">노출 순서</td></tr>
+      <tr><td>START_DT</td><td class="ctype">DATETIME</td><td class="cnote">노출 시작일</td></tr>
+      <tr><td>END_DT</td><td class="ctype">DATETIME</td><td class="cnote">노출 종료일 (@Scheduled 체크)</td></tr>
+    </tbody></table></div>
+    <div class="dbtable"><div class="dbthead"><div class="dbtname">기타 테이블</div><div class="dbtdesc">관계도</div></div><table><thead><tr><th>테이블</th><th>역할</th><th>관계</th></tr></thead><tbody>
+      <tr><td>TB_TRAVEL_IMG</td><td class="cnote">여행지 이미지</td><td class="cnote">N:1 → TB_TRAVEL</td></tr>
+      <tr><td>TB_AVAILABILITY</td><td class="cnote">예약 가능 날짜</td><td class="cnote">N:1 → TB_TRAVEL</td></tr>
+      <tr><td>TB_REVIEW</td><td class="cnote">리뷰·별점</td><td class="cnote">1:1 → TB_RESERVATION</td></tr>
+      <tr><td>TB_WISHLIST</td><td class="cnote">찜 목록</td><td class="cnote">N:1 → MEMBER, TRAVEL</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <div class="sec-label" style="margin-bottom:14px">REST API 전체 목록 (15개)</div>
+  <div class="apifulllist">
+    <div class="divlabel">사용자 API</div>
+    <div class="apifullrow"><span class="method mget">GET</span><div class="apifullurl">/api/main/content</div><div class="apifulldesc">메인 배너·추천·태그 (@Cacheable)</div><span class="apiauth anone">공개</span></div>
+    <div class="apifullrow"><span class="method mget">GET</span><div class="apifullurl">/api/travel/search</div><div class="apifulldesc">여행지 검색 (위경도 포함)</div><span class="apiauth anone">공개</span></div>
+    <div class="apifullrow"><span class="method mget">GET</span><div class="apifullurl">/api/travel/:id</div><div class="apifulldesc">여행지 상세 + sections JSON</div><span class="apiauth anone">공개</span></div>
+    <div class="apifullrow"><span class="method mget">GET</span><div class="apifullurl">/api/travel/suggest</div><div class="apifulldesc">검색 자동완성 5건</div><span class="apiauth anone">공개</span></div>
+    <div class="apifullrow"><span class="method mget">GET</span><div class="apifullurl">/api/travel/nearby</div><div class="apifulldesc">반경 내 주변 여행지 (Haversine)</div><span class="apiauth anone">공개</span></div>
+    <div class="apifullrow"><span class="method mget">GET</span><div class="apifullurl">/api/travel/:id/availability</div><div class="apifulldesc">예약 가능 날짜 목록</div><span class="apiauth anone">공개</span></div>
+    <div class="apifullrow"><span class="method mpost">POST</span><div class="apifullurl">/api/reservation</div><div class="apifulldesc">예약 생성 + PG 결제 (@Transactional)</div><span class="apiauth areq">인증 필요</span></div>
+    <div class="apifullrow"><span class="method mget">GET</span><div class="apifullurl">/api/my/reservations</div><div class="apifulldesc">내 예약 목록 (위경도 포함)</div><span class="apiauth areq">인증 필요</span></div>
+    <div class="apifullrow"><span class="method mget">GET</span><div class="apifullurl">/api/reservation/:id/cancel-policy</div><div class="apifulldesc">취소 환불 금액 계산</div><span class="apiauth areq">인증 필요</span></div>
+    <div class="apifullrow"><span class="method mpatch">PATCH</span><div class="apifullurl">/api/reservation/:id/cancel</div><div class="apifulldesc">예약 취소 + PG 환불</div><span class="apiauth areq">인증 필요</span></div>
+    <div class="apifullrow"><span class="method mpost">POST</span><div class="apifullurl">/api/review</div><div class="apifulldesc">리뷰 작성 (평균 별점 자동 갱신)</div><span class="apiauth areq">인증 필요</span></div>
+    <div class="apifullrow"><span class="method mpost">POST</span><div class="apifullurl">/api/wishlist/:id</div><div class="apifulldesc">찜 토글 (낙관적 업데이트)</div><span class="apiauth areq">인증 필요</span></div>
+    <div class="apifullrow"><span class="method mget">GET</span><div class="apifullurl">/api/map/geocode</div><div class="apifulldesc">주소→위경도 서버 프록시 (키 보안)</div><span class="apiauth anone">공개</span></div>
+    <div class="divlabel">관리자 API (ROLE_ADMIN)</div>
+    <div class="apifullrow"><span class="method mpost">POST</span><div class="apifullurl">/admin/main-content</div><div class="apifulldesc">메인 콘텐츠 등록 (@CacheEvict)</div><span class="apiauth aadmin">ADMIN</span></div>
+    <div class="apifullrow"><span class="method mpatch">PATCH</span><div class="apifullurl">/admin/main-content/reorder</div><div class="apifulldesc">배너 순서 일괄 변경</div><span class="apiauth aadmin">ADMIN</span></div>
+    <div class="apifullrow"><span class="method mpatch">PATCH</span><div class="apifullurl">/admin/travel/:id/sections</div><div class="apifulldesc">여행지 섹션 JSON 업데이트</div><span class="apiauth aadmin">ADMIN</span></div>
+  </div>
+</div>
+<div class="pagenav">
+  <button class="pnavbtn" onclick="go('p8')">← 08 관리자</button>
+  <span class="pnavinfo">DB · API</span>
+  <button class="pnavbtn pr" onclick="go('home')">처음으로 ↑</button>
+</div>
+</div>
+
+<script>
+const ids=['home','p1','p2','p3','p4','p5','p6','p7','p8','db'];
+function go(key){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+key).classList.add('active');
+  const i=ids.indexOf(key);
+  if(i>=0) document.querySelectorAll('.navbtn')[i].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
