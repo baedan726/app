@@ -113,8 +113,10 @@ function fnInit() {
         <!-- header start -->
 	    <c:import url="/sym/mms/EgovHeader.do" />
 	    <!-- //header end -->
+   
 
-        <div class="container">
+
+        <div class="container">							
             <div class="p_login">
                 <h1>로그인</h1>
                 <p class="txt">전자정부표준프레임워크 포털 홈페이지 로그인 페이지입니다.<br>
@@ -126,7 +128,9 @@ function fnInit() {
 		                <input name="iptSubmit1" type="submit" value="전송" title="전송" />
 		            </div> 
 		            <input type="hidden" name="message" value="<c:out value='${message}'/>" />
-		            
+
+
+									            
                         <fieldset>
                             <legend>로그인</legend>
 
@@ -150,6 +154,8 @@ function fnInit() {
                                 <a href="#LINK" class="btn" onClick="actionLogin()">로그인</a>
                                 <a href="#LINK" class="btn" onClick="goRegiUsr();">회원가입</a>
                             </div>
+                            
+
                         </fieldset>
                         
                         <input name="userSe" type="hidden" value="GNR"/>
