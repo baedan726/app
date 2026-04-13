@@ -269,55 +269,7 @@ $(document).ready(function(){
 	//-->
 </script>
 
-                 <%-- 개발자도구 카드 스타일 --%>
-<div style="margin-top:10px; text-align:center; ">
-    <h2 style="font-size:12px; font-weight:700; color:#aaa;
-               letter-spacing:1px; text-transform:uppercase;
-               margin-bottom:10px; ">
-        🛠 개발자도구
-    </h2>
-    <div style="display:inline-flex; flex-direction:column; gap:6px; align-items:center;margin-bottom: 50px">
 
-        <a href="/app/guide/team-dev-manual.html"
-           style="display:flex; align-items:center; gap:10px;
-                  background:#f0f5ff; border:1px solid #c7d9ff;
-                  border-radius:8px; padding:9px 16px;
-                  text-decoration:none; width:220px;
-                  transition:all .2s;"
-           onmouseover="this.style.background='#ddeaff'; this.style.borderColor='#6699ff';"
-           onmouseout="this.style.background='#f0f5ff'; this.style.borderColor='#c7d9ff';">
-            <span style="font-size:16px;">📘</span>
-            <div>
-                <div style="color:#3366cc; font-size:12px; font-weight:700;">
-                    개발 환경 설정 가이드
-                </div>
-                <div style="color:#99aacc; font-size:10px; margin-top:1px;">
-                    eGov · Vue · MySQL · Git
-                </div>
-            </div>
-        </a>
-
-        <a href="/app/guide/travel_storyboard_v3 (1).html"
-           style="display:flex; align-items:center; gap:10px;
-                  background:#f0fff8; border:1px solid #b6ecd4;
-                  border-radius:8px; padding:9px 16px;
-                  text-decoration:none; width:220px;
-                  transition:all .2s;"
-           onmouseover="this.style.background='#d6f5e8'; this.style.borderColor='#4dbb88';"
-           onmouseout="this.style.background='#f0fff8'; this.style.borderColor='#b6ecd4';">
-            <span style="font-size:16px;">🗂️</span>
-            <div>
-                <div style="color:#2d8a5e; font-size:12px; font-weight:700;">
-                    스토리보드
-                </div>
-                <div style="color:#88bbaa; font-size:10px; margin-top:1px;">
-                    화면 설계 · 기능 목록 · UI 흐름
-                </div>
-            </div>
-        </a>
-
-    </div>
-</div>
 <form name="menuListForm" action ="" method="post">
     <input type="hidden" id="menuNo" name="menuNo" value="<%=session.getAttribute("menuNo")%>" />
     <input type="hidden" id="link" name="link" value="" />
