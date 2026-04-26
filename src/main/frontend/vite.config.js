@@ -10,6 +10,11 @@ import { fileURLToPath, URL } from 'node:url';
  * - 페이지 간 공통 코드는 chunks/ 로 자동 분리
  */
 export default defineConfig({
+	// ★ 빌드된 HTML 안의 자원 경로 prefix.
+	//   /pickeat/ 로 잡으면 모든 link/script 태그가 /pickeat/css/..., /pickeat/js/... 로 만들어짐
+	//   → webapp/pickeat/ 한 폴더 안에서 완결됨, eGov 자원과 충돌 없음
+  base: '/pickeat/',
+		
   plugins: [vue()],
   resolve: {
     alias: {
