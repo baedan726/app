@@ -1,0 +1,14 @@
+/* =====================================================================
+   홈 페이지 전용 스타일
+   이 파일은 home 페이지에서만 로드됨 (다른 페이지 번들에 포함 X)
+   ===================================================================== */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 1024px) {
+  .two-col { grid-template-columns: 1fr; }
+}
