@@ -5,7 +5,13 @@ import { recommendApi } from '@/shared/api/recommend';
 const categories = ref([]);
 
 onMounted(async () => {
-  categories.value = await recommendApi.getCategories();
+  try {
+    const data = await recommendApi.getCategories();
+    categories.value = Array.isArray(data) ? data : [];
+  } catch (e) {
+    console.error("[CategoryGrid] 로드 실패", e);
+    categories.value = [];
+  }
 });
 
 function selectCategory(cat) {

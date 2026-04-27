@@ -5,7 +5,13 @@ import { recommendApi } from '@/shared/api/recommend';
 const reviews = ref([]);
 
 onMounted(async () => {
-  reviews.value = await recommendApi.getRecentReviews({ limit: 3 });
+  try {
+    const data = await recommendApi.getRecentReviews({ limit: 3 });
+    reviews.value = Array.isArray(data) ? data : [];
+  } catch (e) {
+    console.error('[RecentReviews] 로드 실패', e);
+    reviews.value = [];
+  }
 });
 </script>
 
@@ -15,22 +21,23 @@ onMounted(async () => {
       <h2 class="section-title">최근 리뷰</h2>
       <a href="/reviews.html" class="section-more">더 보기 ›</a>
     </div>
-    <div class="review-grid">
+    <div class="review-grid" v-if="reviews.length > 0">
       <article v-for="review in reviews" :key="review.id" class="review-card">
-        <div class="review-avatar">{{ review.avatar }}</div>
+        <div class="review-avatar">{{ review.avatar || '?' }}</div>
         <div class="review-content">
           <div class="review-header">
-            <span class="review-author">{{ review.author }}</span>
+            <span class="review-author">{{ review.author || '익명' }}</span>
             <span class="review-score">
-              <span class="star">★</span>{{ review.rating }}
+              <span class="star">★</span>{{ review.rating || 0 }}
             </span>
           </div>
-          <p class="review-text">{{ review.content }}</p>
-          <p class="review-meta">{{ review.restaurant }} · {{ review.date }}</p>
+          <p class="review-text">{{ review.content || '' }}</p>
+          <p class="review-meta">{{ review.restaurant || '' }} · {{ review.date || '' }}</p>
         </div>
-        <div class="review-thumb">{{ review.thumb }}</div>
+        <div class="review-thumb">{{ review.thumb || '🍽' }}</div>
       </article>
     </div>
+    <div v-else class="empty-msg">아직 등록된 리뷰가 없습니다.</div>
   </section>
 </template>
 
@@ -40,7 +47,12 @@ onMounted(async () => {
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
 }
-
+.empty-msg {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 13px;
+}
 .review-card {
   display: flex;
   gap: 12px;
@@ -48,7 +60,6 @@ onMounted(async () => {
   padding: 14px 0 12px;
   border-top: 1px solid var(--color-line);
 }
-
 .review-avatar {
   width: 36px;
   height: 36px;
@@ -71,7 +82,6 @@ onMounted(async () => {
 }
 .review-author { font-size: 13px; font-weight: 700; }
 .review-score { font-size: 12px; color: var(--color-muted); }
-
 .review-text {
   font-size: 13px;
   line-height: 1.5;
@@ -83,7 +93,6 @@ onMounted(async () => {
   -webkit-box-orient: vertical;
 }
 .review-meta { font-size: 11px; color: var(--color-muted); }
-
 .review-thumb {
   width: 56px;
   height: 56px;
@@ -95,7 +104,6 @@ onMounted(async () => {
   justify-content: center;
   font-size: 24px;
 }
-
 @media (max-width: 1024px) {
   .review-grid { grid-template-columns: 1fr; }
 }

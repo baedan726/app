@@ -14,15 +14,36 @@ const user = ref({
 });
 
 const favorites = ref([]);
+const loading = ref(false);
+const error = ref(false);
 
-onMounted(async () => {
-  // 임시: 찜한 맛집 = 추천 목록 사용
-  favorites.value = await recommendApi.getPersonalPicks();
-});
+async function fetchFavorites() {
+  loading.value = true;
+  error.value = false;
+  try {
+    // 임시: 찜한 맛집 = 추천 목록 사용
+    const data = await recommendApi.getPersonalPicks();
+    favorites.value = Array.isArray(data) ? data : [];
+  } catch (e) {
+    console.error('[MyPage] 찜한 맛집 로드 실패', e);
+    error.value = true;
+    favorites.value = [];
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(fetchFavorites);
 
 async function onToggleLike(item) {
-  item.liked = !item.liked;
-  await recommendApi.toggleLike(item.id, item.liked);
+  if (!item || !item.id) return;
+  const prevState = item.liked;
+  item.liked = !prevState;
+  try {
+    await recommendApi.toggleLike(item.id, item.liked);
+  } catch (e) {
+    item.liked = prevState;
+  }
 }
 </script>
 
@@ -54,7 +75,23 @@ async function onToggleLike(item) {
         <h2 class="section-title">찜한 맛집</h2>
         <a href="/restaurants.html" class="section-more">전체 보기 ›</a>
       </div>
-      <div class="grid">
+
+      <!-- 로딩 -->
+      <div v-if="loading" class="state-msg">불러오는 중...</div>
+
+      <!-- 에러 -->
+      <div v-else-if="error" class="state-msg state-error">
+        찜한 맛집을 불러오지 못했습니다.
+        <button @click="fetchFavorites" class="retry-btn">다시 시도</button>
+      </div>
+
+      <!-- 빈 결과 -->
+      <div v-else-if="favorites.length === 0" class="state-msg">
+        아직 찜한 맛집이 없습니다.
+      </div>
+
+      <!-- 정상 -->
+      <div v-else class="grid">
         <RecommendCard
           v-for="item in favorites"
           :key="item.id"
@@ -68,3 +105,26 @@ async function onToggleLike(item) {
 
   <AppFooter />
 </template>
+
+<style scoped>
+.state-msg {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 14px;
+}
+.state-error { color: var(--color-danger, #e25555); }
+.retry-btn {
+  margin-left: 16px;
+  padding: 6px 16px;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+}
+.retry-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+</style>

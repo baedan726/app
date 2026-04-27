@@ -21,14 +21,17 @@ async function load() {
       }),
       weatherApi.getCurrent()
     ]);
-    picks.value = list;
-    mealCode.value = weather.code;
+    picks.value = Array.isArray(list) ? list : [];
+    mealCode.value = (weather && weather.code) || '-';
   } catch (e) {
-    console.error('추천 로드 실패', e);
+    console.error('[TodayPicks] 로드 실패', e);
+    picks.value = [];
+    mealCode.value = '-';
   }
 }
 
 async function onToggleLike(item) {
+  if (!item || !item.id) return;
   const before = item.liked;
   item.liked = !item.liked;
   try {
@@ -57,7 +60,7 @@ watch([selectedSituations, keyword], load, { deep: true });
       </div>
     </div>
 
-    <div class="recommend-grid">
+    <div class="recommend-grid" v-if="picks.length > 0">
       <RecommendCard
         v-for="item in picks"
         :key="item.id"
@@ -69,6 +72,7 @@ watch([selectedSituations, keyword], load, { deep: true });
       />
       <button class="carousel-nav" aria-label="다음">›</button>
     </div>
+    <div v-else class="empty-msg">조건에 맞는 추천이 없습니다.</div>
   </section>
 </template>
 
@@ -95,6 +99,12 @@ watch([selectedSituations, keyword], load, { deep: true });
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
   position: relative;
+}
+.empty-msg {
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 14px;
 }
 .carousel-nav {
   position: absolute;
