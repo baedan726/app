@@ -1,1 +1,0 @@
-.page-head{padding:24px 4px;margin-bottom:8px}.page-title{font-size:28px;font-weight:800;margin-bottom:6px}.page-desc{font-size:14px;color:var(--color-muted)}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}@media(max-width:1024px){.grid{grid-template-columns:repeat(2,1fr)}}

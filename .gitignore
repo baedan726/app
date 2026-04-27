@@ -22,4 +22,15 @@ Thumbs.db
 
 # 환경설정 (보안상 중요!)
 *.properties.local
-application-local.yml
+application-local.ymlsrc/main/frontend/node_modules/
+src/main/frontend/dist/
+src/main/frontend/.vite/
+src/main/webapp/pickeat/
+src/main/webapp/.pickeat-manifest.json
+target/
+.classpath
+.project
+.settings/
+.vscode/
+.idea/
+*.log
